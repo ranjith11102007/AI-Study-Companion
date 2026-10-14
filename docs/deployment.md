@@ -105,6 +105,10 @@ Both are additive only.
 
 ## Deploy to a free host (the "143" plan)
 
+**Reference deployment:** this repo is live at
+<https://studymate-ai-ipyt.onrender.com> (Render free + Supabase + Gemini free tier). The steps
+below reproduce it.
+
 **What runs where.** The app is one process: FastAPI serves the API *and* the
 static frontend, and talks to a managed Postgres over the network. A free host
 has no GPU and no Ollama, so hosting changes the **AI runtime only** — the same

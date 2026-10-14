@@ -296,6 +296,9 @@ ruff check .
 
 ## Deployment (optional, free)
 
+**Reference deployment:** <https://studymate-ai-ipyt.onrender.com> (Render free + Supabase + Gemini
+free tier).
+
 The default setup is fully local. If you want a **hosted** copy, the same code runs against a
 managed Postgres + a free OpenAI-compatible API — no source changes, just environment variables:
 

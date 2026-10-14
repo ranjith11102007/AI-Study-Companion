@@ -326,10 +326,22 @@ dimension validation + mismatch rejection, empty-input short-circuit, factory de
 **Done in this step:** repo initialized and pushed to GitHub
 (`ranjith11102007/AI-Study-Companion`, private, branch `main`).
 
-**Not verified live:** the hosted provider was not exercised against a real Gemini/Groq key and no
-Render service was created — both need the operator's own accounts (`DATABASE_URL` + an
-`OPENAI_API_KEY`). The mocked-HTTP tests cover the wire format; the Dockerfile is not
-build-verified on this machine (Docker is not installed).
+### Deployed instance (live)
+
+- **URL:** <https://studymate-ai-ipyt.onrender.com>
+- Render service `studymate-ai` (`srv-db7k7bm7bikc73b6hngg`), free plan, Docker, branch `main`.
+- Env: `DATABASE_URL` (Supabase), `SECRET_KEY` (generated), `CHAT_PROVIDER=openai`,
+  `EMBEDDING_PROVIDER=openai`, `OPENAI_BASE_URL=…/v1beta/openai`,
+  `OPENAI_CHAT_MODEL=gemini-flash-latest`, `OPENAI_EMBED_MODEL=gemini-embedding-001`,
+  `OPENAI_EMBED_DIMENSION=768`, `EMBEDDING_DIMENSION=768`.
+- **Verified live:** `/api/health/live` = ok; `/api/health/ready` = ok with `database`, `pgvector`
+  (0.8.2), `openai` (Gemini), `ocr`, `office` and `storage` all `ok`; `/` serves the frontend (200).
+- First deploy failed (`update_failed`): the service was created through the Render API **without**
+  env vars, so startup aborted on the production `SECRET_KEY` check. Fixed by `PUT
+  /v1/services/{id}/env-vars` and redeploying.
+- **Reprocess materials:** existing vectors were produced by the local model (`nomic-embed-text`),
+  which is a *different* space from `gemini-embedding-001`; call
+  `POST /api/materials/{id}/reprocess` so the course is re-embedded by the hosted provider.
 
 ---
 
