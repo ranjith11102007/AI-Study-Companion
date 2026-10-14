@@ -3,7 +3,8 @@
 A ~12-slide walkthrough. Speaker notes in italics.
 
 1. **Title** — StudyMate AI: a local-first, source-grounded study companion.
-   *No cloud AI, no paid APIs: inference runs on your machine via Ollama.*
+   *No cloud AI, no paid APIs by default: inference runs on your machine via
+   Ollama. An optional hosted mode can use a free OpenAI-compatible API.*
 
 2. **Problem** — Generic chatbots hallucinate and can't cite your course
    material; cloud tutors cost money and leak data.

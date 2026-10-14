@@ -1,8 +1,12 @@
 # Architecture
 
-StudyMate AI is a **local-first** AI study companion. All inference runs on the
-user's machine through [Ollama](https://ollama.com); there are no cloud AI calls
-and no paid APIs. Persistence is PostgreSQL with the `pgvector` extension.
+StudyMate AI is a **local-first** AI study companion. By default all inference
+runs on the user's machine through [Ollama](https://ollama.com) — no cloud AI
+calls and no paid APIs. The model layer is a swappable seam, so an *optional*
+hosted deployment can instead point at any OpenAI-compatible API
+(`CHAT_PROVIDER=openai`; see `docs/deployment.md`) — but nothing leaves the
+machine with the default configuration. Persistence is PostgreSQL with the
+`pgvector` extension.
 
 ```
 Browser (static SPA at /)
@@ -14,7 +18,7 @@ FastAPI (backend/app)
   ├── services           business logic (materials, retrieval, tutor, citations,
   │                      assessments, learner, topics, providers, evaluation)
   ├── ingestion          extraction (PDF/PPTX/image/text) → chunking → embeddings
-  ├── ai                 provider interfaces + Ollama implementation
+  ├── ai                 provider interfaces (Ollama + OpenAI-compatible)
   ├── models             SQLAlchemy ORM (async)
   └── core               settings, logging, rate limiting
         │  asyncpg + SQLAlchemy 2.0
@@ -23,6 +27,7 @@ PostgreSQL + pgvector
         │  HTTP
         ▼
 Ollama  (chat: llama3.2, embeddings: nomic-embed-text)
+        — or — any OpenAI-compatible API when hosted (CHAT_PROVIDER=openai)
 ```
 
 ## Backend
@@ -83,10 +88,18 @@ with its own DB session:
 
 ## AI layer
 
-`app/ai/base.py` defines `ChatModelProvider` and `EmbeddingProvider`.
-`app/ai/ollama.py` implements both over the local Ollama HTTP API. Business
-logic only depends on the interfaces, which is what makes the deterministic
-tests possible (fakes are injected in `backend/tests`).
+`app/ai/base.py` defines `ChatModelProvider` and `EmbeddingProvider`. Two
+implementations exist behind those interfaces:
+
+- `app/ai/ollama.py` — the **default**, talking to a local Ollama HTTP API.
+- `app/ai/openai_compat.py` — any OpenAI-compatible API (OpenAI, Groq,
+  OpenRouter, Gemini, LM Studio, llamafile, vLLM), used for hosted deployments.
+
+`get_chat_provider()` / `get_embedding_provider()` (in `app/ai/ollama.py`, also
+re-exported from `app/ai/__init__.py`) pick one at runtime from
+`CHAT_PROVIDER` / `EMBEDDING_PROVIDER`. Business logic only depends on the
+interfaces, which is what makes the deterministic tests possible (fakes are
+injected in `backend/tests`) and what lets the same code run locally or hosted.
 
 ## Frontend
 
@@ -97,10 +110,12 @@ when the backend or a provider is unavailable.
 ## Configuration
 
 `app/core/config.py` (pydantic-settings, prefix-free, `.env`). Notable settings:
-Ollama URL/models, embedding dimension (must match the DB column, 768),
-retrieval `top_k`/`min_score`, tutor context/token limits, assessment limits,
-BKT parameters, and rate limits. `normalize_database_url` coerces libpq URLs to
-`asyncpg` and requires SSL for managed hosts.
+the AI provider (`chat_provider` / `embedding_provider` = `ollama` or `openai`,
+plus `openai_base_url` / `openai_api_key` / `openai_chat_model` /
+`openai_embed_model`), Ollama URL/models, embedding dimension (must match the DB
+column, 768), retrieval `top_k`/`min_score`, tutor context/token limits,
+assessment limits, BKT parameters, and rate limits. `normalize_database_url`
+coerces libpq URLs to `asyncpg` and requires SSL for managed hosts.
 
 ## Evaluation
 

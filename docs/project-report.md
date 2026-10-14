@@ -6,10 +6,13 @@ StudyMate AI is a **local-first** AI tutoring and adaptive-learning web app. It
 indexes a student's own course material and uses a **local** model (Ollama) to
 answer questions **with citations back to real stored sources**, generate and
 auto-grade assessments, and maintain a per-topic mastery model that drives study
-recommendations. There are **no cloud or paid AI calls**; all inference runs on
-the user's machine. Answers, citations, scores and mastery values are computed
-from real stored data — the app never returns canned or fabricated results, and
-it says "insufficient evidence" rather than inventing an answer.
+recommendations. There are **no cloud or paid AI calls in the default
+configuration**; all inference runs on the user's machine. (The AI layer is a
+swappable seam, so an optional hosted deployment can use a free
+OpenAI-compatible API instead — see `docs/deployment.md`.) Answers, citations,
+scores and mastery values are computed from real stored data — the app never
+returns canned or fabricated results, and it says "insufficient evidence" rather
+than inventing an answer.
 
 The existing repo already had authentication, courses, uploads and a
 PDF/image/text ingestion pipeline into PostgreSQL + pgvector. This work
@@ -73,7 +76,8 @@ rewriting what worked, and documents the honest boundaries of each feature.
 - Endpoints under `/api/courses/{id}/topics…`.
 
 ### 4.5 Provider health + evaluation harness
-- `app/services/providers.py` — aggregates DB, pgvector, Ollama, OCR and storage
+- `app/services/providers.py` — aggregates DB, pgvector, the configured AI
+  provider (Ollama or OpenAI-compatible), OCR, office and storage
   status (ok / degraded / unavailable) → `GET /api/providers/status`; plus
   `GET /api/health/live` and `GET /api/health/ready`.
 - `app/services/evaluation.py` + `backend/evaluation/dataset.json` — a
