@@ -137,18 +137,17 @@ cd backend
 ```
 
 ```text
-# backend (60 collected)
+# backend (78 collected)
 tests/test_services_unit.py .......... 15 passed        # pure logic, no DB
-tests/test_health.py ...............   3 passed        # health, root→HTML, /ui→/ redirect
-tests/test_tutor_assessments.py ....   12 passed       # incl. 4 new streaming tests
-# full run: 59 passed, 1 failed, 2 rerun (20:59)
+tests/test_ai_providers.py ........... 10 passed        # OpenAI-compatible seam (httpx.MockTransport)
+tests/test_health.py .................  3 passed        # health, root→HTML, /ui→/ redirect
+tests/test_tutor_assessments.py ...... 12 passed        # incl. streaming
+# full run: 78 passed, 0 failed (7:52)
 ```
 
-> The single failure was `test_assessment_generation_grading_and_mastery` with
-> `asyncpg.exceptions.ConnectionDoesNotExistError: connection was closed in the middle of
-> operation` — a **transient remote-Postgres (Supabase pooler) network drop**, not a logic
-> error. Re-run in isolation it passes (`1 passed in 44s`). All prior full runs passed it.
-> `ruff check .` is clean; all 21 frontend JS files pass `node --check`.
+> The suite runs green against the remote Supabase Postgres; the DB-backed tests
+> simply take ~8 minutes. `ruff check .` is clean; all 21 frontend JS files pass
+> `node --check`.
 
 Unit/streaming/health detail: `tests/test_services_unit.py` 15/15;
 `tests/test_tutor_assessments.py -k stream` 4/4; `tests/test_health.py` 3/3.

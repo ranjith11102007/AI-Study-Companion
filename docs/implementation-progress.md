@@ -295,8 +295,6 @@ with `slide_number`, so citations can point at the slide.
 
 ---
 
----
-
 ## Optional hosted deployment ("143")
 
 The app stays **local-first**: with default settings nothing leaves the machine (Ollama serves chat
@@ -320,14 +318,18 @@ runtime rather than only in principle:
 **Deployment artifacts (no-secret):** `Dockerfile`, `.dockerignore`, `render.yaml` (free Render
 Blueprint), `backend/.env.production.example`, and a full walkthrough in `docs/deployment.md`.
 
-**Tests:** `tests/test_ai_providers.py` — chat parsing, SSE streaming, embedding dimension
-validation + mismatch rejection, empty-input short-circuit, factory defaults and the `openai`
-selection, all via `httpx.MockTransport` (no network/model).
+**Tests:** `tests/test_ai_providers.py` — 10 tests covering chat parsing, SSE streaming, embedding
+dimension validation + mismatch rejection, empty-input short-circuit, factory defaults and the
+`openai` selection, all via `httpx.MockTransport` (no network/model). Full suite: **78 passed,
+0 failed (7:52)** against the remote Supabase Postgres.
 
-**Not verified live:** the hosted provider was not exercised against a real Gemini/Groq key (no key
-in this environment); it is covered by mocked-HTTP unit tests only. Account creation, DNS, the
-provider key and the actual `git push` + Render deploy require the operator's own accounts and are
-**not** automated here.
+**Done in this step:** repo initialized and pushed to GitHub
+(`ranjith11102007/AI-Study-Companion`, private, branch `main`).
+
+**Not verified live:** the hosted provider was not exercised against a real Gemini/Groq key and no
+Render service was created — both need the operator's own accounts (`DATABASE_URL` + an
+`OPENAI_API_KEY`). The mocked-HTTP tests cover the wire format; the Dockerfile is not
+build-verified on this machine (Docker is not installed).
 
 ---
 
