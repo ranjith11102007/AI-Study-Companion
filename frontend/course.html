@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="course">
+
+  <main id="page-content">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="courses.html">Courses</a>
+      <span data-icon="chevronRight"></span>
+      <span class="current" id="crumb-current">Course</span>
+    </nav>
+
+    <div class="page-head">
+      <div>
+        <h1 id="course-title">Loading…</h1>
+        <p class="sub" id="course-sub">Materials, topics and assessments for this course.</p>
+      </div>
+      <div class="page-actions">
+        <a class="btn btn-primary" id="upload-link" href="upload.html"><span data-icon="upload"></span> Upload materials</a>
+        <a class="btn btn-ghost" id="assess-link" href="assessment.html"><span data-icon="quiz"></span> Start assessment</a>
+        <a class="btn btn-ghost" id="tutor-link" href="tutor.html"><span data-icon="chat"></span> Ask tutor</a>
+      </div>
+    </div>
+
+    <div class="state" id="course-loading">
+      <span class="state-icon"><span data-icon="clock"></span></span>
+      <span class="state-title">Loading course…</span>
+    </div>
+
+    <div class="state" id="course-error" hidden>
+      <span class="state-icon amber"><span data-icon="alert"></span></span>
+      <span class="state-title" id="course-error-title">Course not found</span>
+      <span class="state-text" id="course-error-text">This course could not be loaded.</span>
+      <span class="state-actions">
+        <a class="btn btn-primary" href="courses.html">Back to courses</a>
+      </span>
+    </div>
+
+    <div data-tabs id="course-tabs" hidden>
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="overview" role="tab">Overview</button>
+        <button class="tab" data-tab="materials" role="tab">Materials</button>
+        <button class="tab" data-tab="topics" role="tab">Topics</button>
+        <button class="tab" data-tab="assessments" role="tab">Assessments</button>
+      </div>
+
+      <!-- Overview -->
+      <section class="tabpanel" data-panel="overview">
+        <div class="stat-grid">
+          <div class="stat">
+            <span class="stat-label"><span data-icon="file"></span> Materials</span>
+            <span class="stat-value" id="count-materials">–</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label"><span data-icon="target"></span> Topics tracked</span>
+            <span class="stat-value" id="count-topics">–</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label"><span data-icon="quiz"></span> Assessments</span>
+            <span class="stat-value" id="count-assessments">–</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label"><span data-icon="chart"></span> Mastery average</span>
+            <span class="stat-value" id="count-mastery">–</span>
+          </div>
+        </div>
+
+        <div class="grid-2 mt-lg">
+          <div class="card card-flush">
+            <div class="card-head"><h3>Mastery by topic</h3></div>
+            <div id="overview-mastery"></div>
+          </div>
+          <div class="card card-pad stack stack-sm">
+            <span class="t-eyebrow">Next best action</span>
+            <strong class="t-h3" id="next-action-title">No recommendation yet</strong>
+            <p class="t-sm muted" id="next-action-text">
+              Complete an assessment and recommendations appear here.
+            </p>
+            <div class="row row-wrap mt-sm" id="next-action-actions">
+              <a class="btn btn-primary btn-sm" id="next-action-link" href="recommendations.html" hidden></a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Materials -->
+      <section class="tabpanel" data-panel="materials" hidden>
+        <div class="card card-flush">
+          <div class="card-head">
+            <h3>Course materials</h3>
+            <a class="link" id="materials-upload-link" href="upload.html">Add material →</a>
+          </div>
+          <div class="list" id="materials-list"></div>
+          <div class="state compact" id="materials-empty" hidden>
+            <span class="state-icon slate"><span data-icon="upload"></span></span>
+            <span class="state-title">No material yet</span>
+            <span class="state-text">Upload and index a document to start tutoring and testing.</span>
+            <span class="state-actions">
+              <a class="btn btn-primary btn-sm" id="materials-empty-btn" href="upload.html">Upload material</a>
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Topics -->
+      <section class="tabpanel" data-panel="topics" hidden>
+        <div class="grid-2">
+          <div class="card card-flush">
+            <div class="card-head"><h3>Topics</h3></div>
+            <div class="list" id="topics-list"></div>
+            <div class="card-body" id="topics-empty" hidden>
+              <div class="state compact">
+                <span class="state-icon slate"><span data-icon="target"></span></span>
+                <span class="state-title">No topics defined</span>
+                <span class="state-text">Add topics by hand or accept a suggestion.</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stack stack-lg">
+            <div class="card card-flush">
+              <div class="card-head"><h3>Add a topic</h3></div>
+              <div class="card-body stack stack-md">
+                <form class="stack stack-sm" id="topic-form">
+                  <div class="field">
+                    <label class="field-label" for="topic-name">Name</label>
+                    <input class="input" id="topic-name" type="text" maxlength="120"
+                           placeholder="e.g. Membranes &amp; transport" required />
+                  </div>
+                  <div class="field">
+                    <label class="field-label" for="topic-desc">Description (optional)</label>
+                    <input class="input" id="topic-desc" type="text" placeholder="Short note" />
+                  </div>
+                  <button class="btn btn-primary btn-sm" type="submit"><span data-icon="plus"></span> Add topic</button>
+                </form>
+              </div>
+            </div>
+
+            <div class="card card-flush">
+              <div class="card-head">
+                <h3>Suggestions</h3>
+                <button class="btn btn-quiet btn-sm" id="suggest-btn"><span data-icon="refresh"></span> Refresh</button>
+              </div>
+              <div class="card-body stack stack-sm" id="suggestions"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Assessments -->
+      <section class="tabpanel" data-panel="assessments" hidden>
+        <div class="card card-flush">
+          <div class="card-head">
+            <h3>Assessments</h3>
+            <a class="link" id="assess-new-link" href="assessment.html">New assessment →</a>
+          </div>
+          <div class="list" id="assessments-list"></div>
+          <div class="state compact" id="assessments-empty" hidden>
+            <span class="state-icon amber"><span data-icon="quiz"></span></span>
+            <span class="state-title">No assessments yet</span>
+            <span class="state-text">Generate a quiz from this course's indexed material.</span>
+            <span class="state-actions">
+              <a class="btn btn-primary btn-sm" id="assessments-empty-btn" href="assessment.html">Start an assessment</a>
+            </span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/course.js"></script>
+</body>
+</html>

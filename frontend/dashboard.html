@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="dashboard">
+
+  <main id="page-content">
+    <!-- Welcome -->
+    <section class="dash-hero">
+      <div class="dash-hero-grid">
+        <div class="stack stack-sm" style="max-width:60ch">
+          <span class="t-eyebrow">Overview</span>
+          <h1 class="t-h1" id="welcome-title">Welcome back.</h1>
+          <p class="muted">
+            Everything below is computed from your own courses, indexed material and
+            assessment results. Nothing is a placeholder.
+          </p>
+          <div class="quick-actions mt-sm">
+            <a class="btn btn-primary" href="upload.html"><span data-icon="upload"></span> Upload materials</a>
+            <a class="btn btn-ghost" href="tutor.html"><span data-icon="chat"></span> Ask AI tutor</a>
+            <a class="btn btn-ghost" href="assessment.html"><span data-icon="quiz"></span> Take assessment</a>
+            <a class="btn btn-quiet" href="progress.html"><span data-icon="chart"></span> View progress</a>
+          </div>
+        </div>
+        <div class="stack stack-sm" style="align-items:flex-end;min-width:220px">
+          <label class="t-label" for="course-select">Active course</label>
+          <select class="select" id="course-select">
+            <option value="">Loading courses…</option>
+          </select>
+          <span class="badge badge-neutral">Local-first workspace</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-head mt-lg">
+      <h2>This course</h2>
+      <a class="link" id="course-link" href="courses.html">Open course →</a>
+    </div>
+    <div class="stat-grid">
+      <div class="stat">
+        <span class="stat-label"><span data-icon="file"></span> Materials</span>
+        <span class="stat-value" id="stat-materials">–</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label"><span data-icon="target"></span> Topics tracked</span>
+        <span class="stat-value" id="stat-topics">–</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label"><span data-icon="chart"></span> Mastery average</span>
+        <span class="stat-value" id="stat-mastery">–</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label"><span data-icon="flag"></span> Weak topics</span>
+        <span class="stat-value" id="stat-weak">–</span>
+      </div>
+    </div>
+
+    <div class="grid-2 mt-lg">
+      <div class="card card-flush">
+        <div class="card-head"><h3>Continue learning</h3><a class="link" href="courses.html">All courses →</a></div>
+        <div class="list" id="course-list"></div>
+      </div>
+
+      <div class="card card-flush">
+        <div class="card-head">
+          <h3>Weak topics</h3>
+          <a class="link" id="weak-link" href="recommendations.html">All recommendations →</a>
+        </div>
+        <div class="list" id="weak-list"></div>
+      </div>
+    </div>
+
+    <div class="grid-2 mt-lg">
+      <div class="card card-flush">
+        <div class="card-head"><h3>Assessments</h3><a class="link" id="assess-link" href="assessment.html">New assessment →</a></div>
+        <div class="list" id="assessment-list"></div>
+      </div>
+
+      <div class="card card-flush">
+        <div class="card-head"><h3>Recent materials</h3><a class="link" href="upload.html">Upload →</a></div>
+        <div class="list" id="materials-list"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

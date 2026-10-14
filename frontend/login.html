@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in · StudyMate AI</title>
+  <meta name="description" content="Sign in to your local StudyMate AI workspace." />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="bare" data-page="login">
+
+  <main class="auth">
+    <aside class="auth-aside">
+      <div>
+        <span class="ai-pill"><span class="dot6"></span> StudyMate AI</span>
+        <h2 class="t-h1 mt-md">Pick up where you left off.</h2>
+        <p class="aside-sub mt-sm">
+          One workspace for your sources, tutor conversations, assessments and mastery map —
+          all stored locally.
+        </p>
+      </div>
+
+      <div class="auth-points">
+        <div class="auth-point">
+          <span class="ap-icon"><span data-icon="lock"></span></span>
+          <div>
+            <h4>Local-first by design</h4>
+            <p>Your materials and study data live on your machine — not on a paid cloud.</p>
+          </div>
+        </div>
+        <div class="auth-point">
+          <span class="ap-icon"><span data-icon="chat"></span></span>
+          <div>
+            <h4>Cited answers only</h4>
+            <p>Every tutor response points back to a page, slide or timestamp in your sources.</p>
+          </div>
+        </div>
+        <div class="auth-point">
+          <span class="ap-icon"><span data-icon="chart"></span></span>
+          <div>
+            <h4>Progress you can prove</h4>
+            <p>Mastery is computed from your actual answers, question by question.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="aside-foot">
+        <span data-icon="shield"></span>
+        <span>Free &amp; open-source · no paid APIs · runs on your own infrastructure</span>
+      </div>
+    </aside>
+
+    <div class="auth-main">
+      <div class="auth-card">
+        <span class="t-eyebrow">Welcome back</span>
+        <h1 class="mt-sm">Sign in</h1>
+        <p class="auth-sub">Open your study workspace.</p>
+
+        <form class="auth-form" id="signin-form" novalidate>
+          <div class="field">
+            <label class="field-label" for="signin-email">Email <span class="req">*</span></label>
+            <div class="input-group">
+              <span class="input-icon" data-icon="user"></span>
+              <input class="input" type="email" id="signin-email" name="email"
+                     placeholder="you@example.com" autocomplete="email" required />
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="signin-password">Password <span class="req">*</span></label>
+            <div class="input-group">
+              <span class="input-icon" data-icon="lock"></span>
+              <input class="input" type="password" id="signin-password" name="password"
+                     placeholder="••••••••" autocomplete="current-password" required />
+            </div>
+            <span class="field-help">Passwords are hashed before storage — never kept in plain text.</span>
+          </div>
+
+          <div class="row row-between row-wrap">
+            <label class="check">
+              <input type="checkbox" checked data-todo="Session persistence across visits is coming soon." />
+              <span>Remember me</span>
+            </label>
+            <a href="#" data-todo="Password reset is coming soon.">Forgot password?</a>
+          </div>
+
+          <button class="btn btn-primary btn-lg btn-block" type="submit">Sign in</button>
+
+          <div class="banner banner-plain" style="font-size:12px">
+            <span data-icon="info"></span>
+            <div><strong>Secure sign-in:</strong> your credentials are verified against the
+              backend and a session token is issued for this visit.</div>
+          </div>
+        </form>
+
+        <p class="auth-alt">
+          No account yet?
+          <a href="signup.html">Create one</a>
+          · <a href="index.html">Back to home</a>
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

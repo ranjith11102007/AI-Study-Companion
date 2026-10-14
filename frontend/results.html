@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Results · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="results">
+
+  <main id="page-content">
+    <div class="page-head">
+      <div>
+        <h1>Results</h1>
+        <p class="sub">Score breakdown, explanations and your next revision steps.</p>
+      </div>
+      <div class="page-actions">
+        <a class="btn btn-quiet" href="assessment.html"><span data-icon="arrowLeft"></span> Back to assessments</a>
+      </div>
+    </div>
+
+    <div class="state" id="results-loading">
+      <span class="state-icon"><span data-icon="clock"></span></span>
+      <span class="state-title">Loading result…</span>
+    </div>
+
+    <!-- Empty: no attempt to show -->
+    <div class="state" id="results-empty" hidden>
+      <span class="state-icon amber"><span data-icon="quiz"></span></span>
+      <span class="state-title" id="empty-title">No result to show</span>
+      <span class="state-text" id="empty-text">
+        Finish an assessment and your score, per-topic breakdown and per-question
+        explanations appear here.
+      </span>
+      <span class="state-actions">
+        <a class="btn btn-primary" href="assessment.html">Start an assessment</a>
+        <a class="btn btn-ghost" href="dashboard.html">Back to dashboard</a>
+      </span>
+    </div>
+
+    <!-- Filled: rendered from the graded attempt -->
+    <div id="results-filled" hidden>
+      <div class="score-hero">
+        <span class="ring" style="width:132px;height:132px">
+          <svg width="132" height="132" viewBox="0 0 132 132" aria-hidden="true">
+            <circle class="ring-track" cx="66" cy="66" r="52" fill="none" stroke-width="11" />
+            <circle class="ring-fill mastery" id="score-ring-fill" cx="66" cy="66" r="52"
+                    fill="none" stroke-width="11"
+                    stroke-dasharray="326.7" stroke-dashoffset="326.7" />
+          </svg>
+          <span class="ring-center">
+            <span class="ring-value" id="score-value" style="font-size:30px">–</span>
+          </span>
+        </span>
+        <div class="score-info stack stack-sm">
+          <span class="t-eyebrow">Assessment result</span>
+          <span class="badge badge-primary" id="score-grade" style="align-self:flex-start">–</span>
+          <p class="t-h3" id="score-caption">–</p>
+          <span class="t-sm muted" id="score-meta">–</span>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-primary" id="retry-btn"><span data-icon="rotate"></span> Retake</button>
+          <a class="btn btn-ghost" href="recommendations.html" id="weak-link"><span data-icon="target"></span> Weak topics</a>
+        </div>
+      </div>
+
+      <div class="stat-grid mt-lg">
+        <div class="stat">
+          <span class="stat-label"><span data-icon="checkCircle"></span> Correct</span>
+          <span class="stat-value" id="stat-correct">–</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label"><span data-icon="xCircle"></span> Incorrect</span>
+          <span class="stat-value" id="stat-wrong">–</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label"><span data-icon="alert"></span> Unanswered</span>
+          <span class="stat-value" id="stat-unanswered">–</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label"><span data-icon="history"></span> Needs review</span>
+          <span class="stat-value" id="stat-pending">–</span>
+        </div>
+      </div>
+
+      <div class="grid-2 mt-lg">
+        <div class="card card-flush">
+          <div class="card-head"><h3>Topic breakdown</h3><span class="t-sm muted">From your answers</span></div>
+          <div class="card-body">
+            <div class="stack stack-md" id="breakdown"></div>
+          </div>
+        </div>
+
+        <div class="card card-flush">
+          <div class="card-head"><h3>Next steps</h3></div>
+          <div class="card-body stack stack-sm">
+            <a class="suggest-btn" href="recommendations.html">
+              <span data-icon="target"></span> Revise your weak topics
+              <span class="arr" data-icon="chevronRight"></span>
+            </a>
+            <a class="suggest-btn" href="tutor.html">
+              <span data-icon="chat"></span> Ask the tutor about a wrong answer
+              <span class="arr" data-icon="chevronRight"></span>
+            </a>
+            <div class="banner banner-info mt-sm">
+              <span data-icon="info"></span>
+              <div>Submitting this attempt updated mastery per topic and re-queued anything
+                below the threshold.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-flush mt-lg">
+        <div class="card-head">
+          <h3>Answer review</h3>
+          <span class="t-sm muted" id="review-summary">with explanations &amp; source references</span>
+        </div>
+        <div id="review"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/results.js"></script>
+</body>
+</html>

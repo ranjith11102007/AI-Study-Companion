@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flashcards · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="flashcards">
+
+  <main id="page-content">
+    <div class="page-head">
+      <div>
+        <h1>Flashcards</h1>
+        <p class="sub">Active recall with instant grading — spaced repetition comes next.</p>
+      </div>
+      <div class="page-actions">
+        <span class="example-tag">Example deck</span>
+        <a class="btn btn-quiet" href="upload.html"><span data-icon="upload"></span> Add material</a>
+      </div>
+    </div>
+
+    <div class="banner banner-plain mb-lg">
+      <span data-icon="info"></span>
+      <div>
+        This five-card biology set is included so you can try flipping, grading and the
+        keyboard controls. Decks generated from your own materials are added once the
+        retrieval pipeline is enabled.
+      </div>
+    </div>
+
+    <div class="row row-wrap mb-lg" style="gap:8px">
+      <button class="chip active"><span class="chip-dot"></span> Biology 101</button>
+      <button class="chip" data-todo="Deck generation from your materials is coming soon.">Cell division</button>
+      <button class="chip" data-todo="Deck generation from your materials is coming soon.">Molecular biology</button>
+      <button class="chip" data-todo="Generated decks are added once the pipeline is enabled.">Auto-generated deck</button>
+    </div>
+
+    <div class="flash-stage">
+      <div class="flashcard" id="flashcard" tabindex="0" role="button"
+           aria-label="Flip card (Space or Enter)">
+        <div class="flash-face flash-front">
+          <div class="flash-head">
+            <span class="fh-label">Question</span>
+            <span class="example-tag">Example · <span id="flash-topic">Cell biology</span></span>
+          </div>
+          <div class="flash-body">
+            <span class="fb-text" id="flash-front">Loading…</span>
+          </div>
+          <span class="flash-hint"><span data-icon="rotate"></span> Tap or press Space to flip</span>
+        </div>
+
+        <div class="flash-face flash-back">
+          <div class="flash-head">
+            <span class="fh-label">Answer</span>
+            <span class="example-tag">Example</span>
+          </div>
+          <div class="flash-body">
+            <span class="fb-text" id="flash-back"></span>
+          </div>
+          <span class="flash-hint"><span data-icon="rotate"></span> Tap to see the question again</span>
+        </div>
+      </div>
+
+      <!-- Progress -->
+      <div class="stack stack-sm mt-lg">
+        <div class="row row-between t-sm">
+          <span class="muted" id="flash-pos">1 / 5</span>
+          <span class="muted">
+            Knew it: <strong class="mastery" id="flash-known">0</strong> ·
+            Again: <strong class="rose" id="flash-again">0</strong>
+          </span>
+        </div>
+        <div class="progress tall"><span id="flash-bar" style="width:20%"></span></div>
+      </div>
+
+      <!-- Controls -->
+      <div class="flash-controls">
+        <button class="btn btn-ghost" id="prev-card">
+          <span data-icon="chevronLeft"></span> Previous
+        </button>
+        <button class="btn btn-ghost" id="again-btn">
+          <span data-icon="rotate"></span> Review again
+        </button>
+        <button class="btn btn-primary" id="know-btn">
+          <span data-icon="check"></span> I knew it
+        </button>
+        <button class="btn btn-ghost" id="next-card">
+          Next <span data-icon="chevronRight"></span>
+        </button>
+      </div>
+
+      <p class="center t-sm muted mt-md">
+        Keyboard: <span class="mono">Space</span> flip ·
+        <span class="mono">←/→</span> move · grading advances the deck
+      </p>
+    </div>
+
+    <div class="grid-3 mt-xl">
+      <div class="card card-pad stack stack-sm">
+        <span class="tile-icon" data-icon="brain"></span>
+        <h3 class="t-h3">Why active recall</h3>
+        <p class="t-sm muted">Retrieving an answer from memory strengthens it far more than
+          re-reading — every flip is a mini test.</p>
+      </div>
+      <div class="card card-pad stack stack-sm">
+        <span class="tile-icon amber" data-icon="clock"></span>
+        <h3 class="t-h3">Spaced repetition</h3>
+        <p class="t-sm muted">Cards marked “review again” resurface sooner and “knew it” cards
+          wait longer, following a forgetting curve.</p>
+      </div>
+      <div class="card card-pad stack stack-sm">
+        <span class="tile-icon mastery" data-icon="file"></span>
+        <h3 class="t-h3">Sourced answers</h3>
+        <p class="t-sm muted">Generated cards link back to the paragraph they came from, so a
+          hazy answer is one click from the source.</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/flashcards.js"></script>
+</body>
+</html>

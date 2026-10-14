@@ -1,0 +1,264 @@
+/* ==========================================================================
+   StudyMate AI — Landing page
+   Marketing page shown at "/" before sign-in. Reuses tokens + components.
+   Styles are scoped under `.landing` so they never collide with the `.hero`
+   compositions in pages.css (used by dashboard.html / results.html).
+   ========================================================================== */
+
+.landing {
+  display: block;
+}
+
+/* --- Hero ---------------------------------------------------------------- */
+.landing .hero {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(720px 320px at 12% -10%, rgba(99, 102, 241, 0.14), transparent 60%),
+    radial-gradient(560px 300px at 92% 8%, rgba(16, 185, 129, 0.10), transparent 60%),
+    var(--white);
+}
+.landing .hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: calc(var(--gutter) * 2);
+  align-items: center;
+}
+
+.landing .hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--r-full);
+  background: var(--white);
+  border: 1px solid var(--line);
+  color: var(--primary-strong);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+  box-shadow: var(--shadow-hair);
+}
+.landing .hero-eyebrow svg { width: 14px; height: 14px; }
+
+.landing .hero-title {
+  margin: var(--space-md) 0 0;
+  font-family: var(--display-font, "Plus Jakarta Sans"), "Plus Jakarta Sans", sans-serif;
+  font-size: var(--fs-display);
+  line-height: var(--lh-display);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.landing .hero-title em {
+  font-style: normal;
+  color: var(--primary-strong);
+}
+
+.landing .hero-sub {
+  margin: var(--space-md) 0 0;
+  max-width: 48ch;
+  font-size: var(--fs-body-lg);
+  line-height: var(--lh-body-lg);
+  color: var(--muted);
+}
+
+.landing .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  margin-top: var(--space-lg);
+}
+
+.landing .hero-note {
+  margin-top: var(--space-md);
+  font-size: var(--fs-sm);
+  max-width: 48ch;
+}
+
+/* --- Hero visual mock ---------------------------------------------------- */
+.landing .hero-art {
+  display: flex;
+  justify-content: center;
+}
+.landing .hero-art .mock-card {
+  width: 100%;
+  max-width: 360px;
+  padding: var(--space-lg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--white);
+  box-shadow: var(--shadow-float);
+}
+.landing .mock-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: var(--space-md);
+}
+.landing .mock-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: var(--r-full);
+  background: var(--line-strong);
+}
+.landing .mock-dot:first-child { background: var(--rose); }
+.landing .mock-dot:nth-child(2) { background: var(--amber); }
+.landing .mock-dot:nth-child(3) { background: var(--mastery); }
+
+.landing .mock-line {
+  height: 12px;
+  border-radius: var(--r-full);
+  background: var(--subpanel);
+  margin-bottom: 10px;
+}
+.landing .mock-line.lg { width: 85%; background: var(--primary-tint); }
+.landing .mock-line.sm { width: 55%; }
+
+.landing .mock-cite {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: var(--space-sm);
+  padding: 6px 10px;
+  border-radius: var(--r-full);
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+.landing .mock-cite svg { width: 14px; height: 14px; }
+
+/* --- Sections ------------------------------------------------------------ */
+.landing .section {
+  padding: var(--space-xl) 0;
+}
+.landing .section-alt {
+  background: var(--subpanel);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.landing .section-title {
+  margin: 0;
+  font-size: var(--fs-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-align: center;
+}
+.landing .section-sub {
+  margin: var(--space-sm) auto 0;
+  max-width: 60ch;
+  text-align: center;
+  font-size: var(--fs-body-lg);
+}
+
+/* --- Feature grid -------------------------------------------------------- */
+.landing .feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--gutter);
+  margin-top: var(--space-xl);
+}
+.landing .feature-card {
+  padding: var(--space-lg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--white);
+  box-shadow: var(--shadow-card);
+}
+.landing .feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--r-md);
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  margin-bottom: var(--space-md);
+}
+.landing .feature-icon svg { width: 22px; height: 22px; }
+.landing .feature-card h3 {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  color: var(--ink);
+}
+.landing .feature-card p {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--muted);
+}
+
+/* --- Steps --------------------------------------------------------------- */
+.landing .steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--gutter);
+  margin-top: var(--space-xl);
+}
+.landing .step {
+  padding: var(--space-lg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--white);
+}
+.landing .step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-full);
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  font-weight: 700;
+  margin-bottom: var(--space-sm);
+}
+.landing .step h3 {
+  margin: 0 0 var(--space-xs);
+  font-size: var(--fs-h3);
+  line-height: var(--lh-h3);
+  color: var(--ink);
+}
+.landing .step p {
+  margin: 0;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--muted);
+}
+
+/* --- CTA band ------------------------------------------------------------ */
+.landing .cta-band {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-lg);
+  padding: var(--space-xl);
+  border-radius: var(--r-xl);
+  background: linear-gradient(135deg, var(--primary-soft), var(--primary-tint));
+  border: 1px solid var(--primary-tint);
+}
+.landing .cta-band h2 {
+  margin: 0;
+  font-size: var(--fs-h2);
+  line-height: var(--lh-h2);
+  color: var(--ink);
+}
+.landing .cta-band p {
+  margin: var(--space-xs) 0 0;
+}
+
+/* --- Responsive ---------------------------------------------------------- */
+@media (max-width: 900px) {
+  .landing .hero-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .landing .hero-art {
+    order: -1;
+  }
+  .landing .hero-art .mock-card {
+    max-width: 420px;
+  }
+}

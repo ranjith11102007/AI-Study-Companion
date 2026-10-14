@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weak topics · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="recommendations">
+
+  <main id="page-content">
+    <div class="page-head">
+      <div>
+        <h1>Weak topics</h1>
+        <p class="sub">Revision targets computed from accuracy, recency and forgetting curves.</p>
+      </div>
+      <div class="page-actions">
+        <label class="stack stack-xs" style="gap:4px">
+          <span class="t-eyebrow">Course</span>
+          <select class="select" id="course-select" aria-label="Course">
+            <option value="">Loading courses…</option>
+          </select>
+        </label>
+        <button class="btn btn-primary" type="button" id="refresh-rec-btn">
+          <span data-icon="refresh"></span> Regenerate
+        </button>
+        <a class="btn btn-quiet" href="progress.html"><span data-icon="chart"></span> All progress</a>
+      </div>
+    </div>
+
+    <div class="banner banner-danger" id="rec-error" hidden>
+      <span data-icon="alert"></span>
+      <div id="rec-error-text"></div>
+    </div>
+
+    <div class="banner banner-info mb-lg">
+      <span data-icon="info"></span>
+      <div>
+        Recommendations are generated from your real per-topic accuracy and recency — nothing
+        here is estimated. Use <strong>Regenerate</strong> after completing assessments to
+        rebuild the list from the latest graded answers.
+      </div>
+    </div>
+
+    <!-- Empty state: nothing to recommend yet -->
+    <div class="state tinted" id="rec-empty" hidden>
+      <span class="state-icon"><span data-icon="target"></span></span>
+      <span class="state-title">No recommendations yet</span>
+      <span class="state-text" id="rec-empty-text">
+        Complete an assessment and revision targets appear here, ranked by priority.
+      </span>
+      <span class="state-actions">
+        <button class="btn btn-primary btn-sm" type="button" id="empty-refresh-btn">
+          <span data-icon="refresh"></span> Regenerate now
+        </button>
+        <a class="btn btn-ghost btn-sm" id="empty-assess-link" href="assessment.html">
+          Take an assessment
+        </a>
+      </span>
+    </div>
+
+    <div class="card card-flush" id="rec-card" hidden>
+      <div class="card-head">
+        <h3>Revise these first</h3>
+        <span class="badge badge-outline">Ranked by priority</span>
+      </div>
+      <div id="rec-list"></div>
+    </div>
+
+    <div class="grid-3 mt-lg">
+      <div class="card card-pad stack stack-sm">
+        <span class="tile-icon rose" data-icon="pie"></span>
+        <h3 class="t-h3">Accuracy &lt; 60%</h3>
+        <p class="t-sm muted">Topics where you answer fewer than three in five correctly get
+          pulled to the top of the queue.</p>
+      </div>
+      <div class="card card-pad stack stack-sm">
+        <span class="tile-icon amber" data-icon="history"></span>
+        <h3 class="t-h3">Recency &amp; forgetting</h3>
+        <p class="t-sm muted">A topic you nailed two weeks ago is worth less than a shaky one
+          from yesterday — spacing rules decide timing.</p>
+      </div>
+      <div class="card card-pad stack stack-sm">
+        <span class="tile-icon" data-icon="route"></span>
+        <h3 class="t-h3">Diagnostics first</h3>
+        <p class="t-sm muted">Topics you were assessed on but never graded yet appear as
+          diagnostic targets so you can establish your level.</p>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/recommendations.js"></script>
+</body>
+</html>

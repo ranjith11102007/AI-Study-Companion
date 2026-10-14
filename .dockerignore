@@ -1,0 +1,16 @@
+# Keep the image small and free of local state/secrets.
+**/.venv
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.ruff_cache
+.git
+.gitignore
+data
+models
+models/**
+backend/.env
+backend/.env.*
+!backend/.env.example
+!backend/.env.production.example
+**/*.log

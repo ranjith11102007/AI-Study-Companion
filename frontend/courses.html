@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Courses · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="courses">
+
+  <main id="page-content">
+    <div class="page-head">
+      <div>
+        <h1>Courses</h1>
+        <p class="sub">Group your materials into subjects, then tutor and test against them.</p>
+      </div>
+      <div class="page-actions">
+        <a class="btn btn-primary" href="upload.html"><span data-icon="upload"></span> Upload materials</a>
+        <button class="btn btn-ghost" id="new-course-btn">
+          <span data-icon="plus"></span> New course
+        </button>
+      </div>
+    </div>
+
+    <!-- Container for dynamic content -->
+    <div id="courses-grid" class="grid-3">
+        <!-- Courses will be injected here -->
+    </div>
+
+    <!-- Empty state -->
+    <div id="empty-state" class="state mt-lg" hidden>
+      <span class="state-icon"><span data-icon="inbox"></span></span>
+      <span class="state-title">No courses yet</span>
+      <span class="state-text">
+        Create your first course to get started.
+      </span>
+      <span class="state-actions">
+        <button class="btn btn-primary" id="empty-state-btn"><span data-icon="plus"></span> Create course</button>
+      </span>
+    </div>
+  </main>
+
+  <!-- Simple Modal for creating a course -->
+  <dialog id="new-course-modal">
+    <form id="new-course-form" class="stack">
+        <h2>Create New Course</h2>
+        <div class="field">
+            <label for="course-title">Title</label>
+            <input type="text" id="course-title" name="title" required maxlength="200" />
+        </div>
+        <div class="field">
+            <label for="course-desc">Description</label>
+            <textarea id="course-desc" name="description"></textarea>
+        </div>
+        <div class="row">
+            <button type="button" class="btn btn-ghost" id="close-modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+    </form>
+  </dialog>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/courses.js"></script>
+</body>
+</html>

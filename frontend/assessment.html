@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Assessments · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="assessment">
+
+  <main id="page-content">
+    <div class="page-head">
+      <div>
+        <h1>Assessments</h1>
+        <p class="sub">Generate a quiz from your indexed material, take it, and review every answer.</p>
+      </div>
+      <div class="page-actions">
+        <a class="btn btn-quiet" href="progress.html"><span data-icon="chart"></span> Progress</a>
+      </div>
+    </div>
+
+    <div class="banner banner-plain mb-lg">
+      <span data-icon="info"></span>
+      <div>
+        Questions are generated from the material you have uploaded and indexed for the
+        selected course, then verified before the quiz starts. If a course has no indexed
+        content, generation stops with an explanation rather than inventing questions.
+      </div>
+    </div>
+
+    <div class="setup-grid">
+      <!-- Setup form -->
+      <div class="card card-flush">
+        <div class="card-head">
+          <h3>Quiz setup</h3>
+        </div>
+        <div class="card-body stack stack-lg">
+
+          <div class="field">
+            <label class="field-label" for="course-select">Course</label>
+            <select class="select" id="course-select">
+              <option value="">Loading courses…</option>
+            </select>
+            <span class="field-help">Only this course's indexed material is used.</span>
+          </div>
+
+          <hr class="divider" />
+
+          <div class="field">
+            <label class="field-label" for="assessment-title">Title</label>
+            <input class="input" id="assessment-title" type="text" maxlength="200"
+                   placeholder="Practice assessment" autocomplete="off" />
+          </div>
+
+          <hr class="divider" />
+
+          <div class="field">
+            <span class="field-label">Difficulty</span>
+            <span class="field-help">Passed to the question generator as a target level.</span>
+            <div class="segmented" id="difficulty">
+              <button type="button" data-diff="easy">Easy</button>
+              <button type="button" class="active" data-diff="medium">Medium</button>
+              <button type="button" data-diff="hard">Hard</button>
+            </div>
+          </div>
+
+          <hr class="divider" />
+
+          <div class="field">
+            <label class="field-label" for="count-range">
+              Questions: <span id="count-label">5</span>
+            </label>
+            <input type="range" id="count-range" min="1" max="20" step="1" value="5"
+                   style="accent-color:var(--primary);width:100%" />
+            <span class="field-help">Between 1 and 20 questions.</span>
+          </div>
+
+          <hr class="divider" />
+
+          <div class="field">
+            <label class="field-label" for="time-limit">Time limit</label>
+            <select class="select" id="time-limit">
+              <option value="">No time limit</option>
+              <option value="5">5 minutes</option>
+              <option value="10" selected>10 minutes</option>
+              <option value="15">15 minutes</option>
+              <option value="20">20 minutes</option>
+              <option value="30">30 minutes</option>
+              <option value="60">60 minutes</option>
+            </select>
+            <span class="field-help">Running out of time submits whatever you have answered.</span>
+          </div>
+
+          <div class="row row-between row-wrap">
+            <a class="btn btn-quiet" href="courses.html">Back to courses</a>
+            <button class="btn btn-primary btn-lg" id="start-btn">
+              <span data-icon="bolt"></span> Generate &amp; start
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rail -->
+      <div class="stack stack-lg">
+        <div class="card card-flush">
+          <div class="card-head">
+            <h3>Recent assessments</h3>
+            <button class="btn btn-quiet btn-sm" id="reload-assessments">
+              <span data-icon="refresh"></span>
+            </button>
+          </div>
+          <div class="list" id="assessment-list"></div>
+        </div>
+
+        <div class="card card-flush">
+          <div class="card-head"><h3>What you get afterwards</h3></div>
+          <div class="list">
+            <div class="list-item">
+              <span class="item-icon primary" data-icon="chart"></span>
+              <span class="item-main">
+                <span class="item-title">Score &amp; topic breakdown</span>
+                <span class="item-sub">Accuracy per topic, computed from your answers</span>
+              </span>
+            </div>
+            <div class="list-item">
+              <span class="item-icon mastery" data-icon="lightbulb"></span>
+              <span class="item-main">
+                <span class="item-title">Explanation per question</span>
+                <span class="item-sub">Why the answer is right, tied to the source</span>
+              </span>
+            </div>
+            <div class="list-item">
+              <span class="item-icon amber" data-icon="target"></span>
+              <span class="item-main">
+                <span class="item-title">Weak-topic update</span>
+                <span class="item-sub">Feeds recommendations and the revision queue</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="banner banner-warn" id="gen-error" hidden>
+          <span data-icon="alert"></span>
+          <div id="gen-error-text">Generation failed.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/assessment.js"></script>
+</body>
+</html>

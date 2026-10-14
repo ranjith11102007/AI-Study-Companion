@@ -1,0 +1,8 @@
+-r requirements.txt
+
+pytest==8.3.4
+pytest-asyncio==0.25.2
+# Re-runs tests that fail on transient network drops when the DB-backed tests
+# talk to a remote Postgres (Supabase/Neon) pooler. See docs/testing.md.
+pytest-rerunfailures==14.0
+ruff==0.8.4

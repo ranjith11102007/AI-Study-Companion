@@ -1,0 +1,47 @@
+# Render Blueprint — free-tier hosted deployment (the "143" plan).
+#
+# Deploy: push this repo to GitHub, then in Render choose
+#   New + → Blueprint → pick the repo. Render reads this file.
+#
+# You must still supply, in the Render dashboard:
+#   - DATABASE_URL   (your Supabase/Neon PostgreSQL + pgvector URL)
+#   - OPENAI_API_KEY (a free Google AI Studio key — see docs/deployment.md)
+# Render generates SECRET_KEY for you.
+
+services:
+  - type: web
+    name: studymate-ai
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /api/health/live
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      # Managed Postgres + pgvector (Supabase free tier or Neon free tier).
+      - key: DATABASE_URL
+        sync: false
+      # --- AI runtime: OpenAI-compatible free API (Google Gemini) ---
+      # Local Ollama is the default, but a free host has no Ollama; point the
+      # app at any OpenAI-compatible endpoint instead. Gemini's embeddings are
+      # 768-dim, matching the existing vector column.
+      - key: CHAT_PROVIDER
+        value: openai
+      - key: EMBEDDING_PROVIDER
+        value: openai
+      - key: OPENAI_BASE_URL
+        value: https://generativelanguage.googleapis.com/v1beta/openai
+      - key: OPENAI_CHAT_MODEL
+        value: gemini-2.0-flash
+      - key: OPENAI_EMBED_MODEL
+        value: text-embedding-004
+      - key: OPENAI_API_KEY
+        sync: false
+      # --- Hardening ---
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: RATE_LIMIT_ENABLED
+        value: "true"

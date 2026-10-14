@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload materials · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="upload">
+
+  <main id="page-content">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="courses.html">Courses</a>
+      <span data-icon="chevronRight"></span>
+      <span class="current">Upload materials</span>
+    </nav>
+
+    <div class="page-head">
+      <div>
+        <h1>Upload materials</h1>
+        <p class="sub">PDF, images (PNG/JPG/WEBP) and text/Markdown — processed locally, never sent to a paid API.</p>
+      </div>
+    </div>
+
+    <div class="workspace-2">
+      <div class="stack stack-lg">
+        <!-- Target course -->
+        <div class="card card-pad stack stack-sm">
+          <label class="t-label" for="course-select">Course</label>
+          <select class="select" id="course-select">
+            <option value="">Loading courses…</option>
+          </select>
+          <span class="t-sm muted" id="course-hint">
+            Materials are extracted, embedded and indexed into the selected course.
+          </span>
+        </div>
+
+        <!-- Dropzone + queue -->
+        <div class="card card-pad stack stack-md">
+          <div class="dropzone" id="dropzone" role="button" tabindex="0"
+               aria-label="Choose files or drop them here">
+            <span class="dz-icon"><span data-icon="upload"></span></span>
+            <h3>Drop files here or click to browse</h3>
+            <p>PDFs, PowerPoint (.pptx), images (PNG/JPG/WEBP) and text/Markdown are supported. Files are uploaded to
+              your local backend for extraction and indexing.</p>
+          </div>
+          <input type="file" id="file-input" multiple hidden
+                 accept=".pdf,.pptx,.png,.jpg,.jpeg,.webp,.txt,.md" />
+
+          <!-- Empty queue -->
+          <div class="state compact tinted" id="queue-empty">
+            <span class="state-icon slate"><span data-icon="inbox"></span></span>
+            <span class="state-title">No materials uploaded yet</span>
+            <span class="state-text">Add a file above to build your upload queue.</span>
+          </div>
+
+          <!-- Filled queue -->
+          <div class="stack stack-md" id="queue-card" hidden>
+            <div class="row row-between">
+              <span class="t-label" id="queue-count">0 files ready</span>
+              <button class="btn btn-quiet btn-sm" id="clear-queue">Clear all</button>
+            </div>
+            <div class="stack" id="queue-list" style="gap:8px"></div>
+          </div>
+
+          <div class="row row-between row-wrap">
+            <span class="t-sm muted">
+              Extraction and indexing run locally on your machine.
+            </span>
+            <button class="btn btn-primary" id="index-btn">
+              <span data-icon="bolt"></span> Upload &amp; index
+            </button>
+          </div>
+        </div>
+
+        <!-- What happens next -->
+        <div class="card card-flush">
+          <div class="card-head">
+            <h3>What happens after upload</h3>
+            <span class="badge badge-outline">Backend pipeline</span>
+          </div>
+          <div class="card-body">
+            <div class="pipeline-steps">
+              <div class="pipeline-row">
+                <span class="p-dot" data-icon="file"></span>
+                <div class="p-body">
+                  <h4>1 · Extract text</h4>
+                  <p>The PDF text layer is read page by page, PowerPoint slide text and
+                    speaker notes are read via python-pptx, images use local OCR, and
+                    .txt/.md files are read directly.</p>
+                </div>
+              </div>
+              <div class="pipeline-row">
+                <span class="p-dot" data-icon="layers"></span>
+                <div class="p-body">
+                  <h4>2 · Chunk &amp; embed</h4>
+                  <p>Content is split into passages and embedded into PostgreSQL/pgvector.</p>
+                </div>
+              </div>
+              <div class="pipeline-row">
+                <span class="p-dot" data-icon="target"></span>
+                <div class="p-body">
+                  <h4>3 · Detect topics</h4>
+                  <p>Passages are grouped into topics that feed mastery tracking.</p>
+                </div>
+              </div>
+              <div class="pipeline-row">
+                <span class="p-dot" data-icon="chat"></span>
+                <div class="p-body">
+                  <h4>4 · Tutor ready</h4>
+                  <p>The tutor and quiz generator can cite this material with its source.</p>
+                </div>
+              </div>
+            </div>
+            <div class="banner banner-info mt-md">
+              <span data-icon="info"></span>
+              <div>
+                Sources are extracted, chunked and embedded locally, then stored in your own
+                PostgreSQL + pgvector database so the tutor and assessments can cite them.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right rail -->
+      <div class="stack stack-lg">
+        <div class="card card-pad stack stack-md">
+          <span class="t-eyebrow">Supported formats</span>
+          <div class="stack" style="gap:10px">
+            <div class="format-card">
+              <div class="fmt-top">
+                <span class="fmt-icon" data-icon="pdf"></span>
+                <span class="badge badge-mastery">PDF</span>
+              </div>
+              <h4>Documents</h4>
+              <p>Textbook chapters, papers and handouts — cited by page.</p>
+            </div>
+            <div class="format-card">
+              <div class="fmt-top">
+                <span class="fmt-icon" data-icon="image"></span>
+                <span class="badge badge-mastery">IMAGES</span>
+              </div>
+              <h4>Photos &amp; screenshots</h4>
+              <p>PNG, JPG or WEBP — text is read with local OCR.</p>
+            </div>
+            <div class="format-card">
+              <div class="fmt-top">
+                <span class="fmt-icon" data-icon="file"></span>
+                <span class="badge badge-mastery">TEXT</span>
+              </div>
+              <h4>Notes &amp; Markdown</h4>
+              <p>Plain text and Markdown, chunked and embedded.</p>
+            </div>
+            <div class="format-card">
+              <div class="fmt-top">
+                <span class="fmt-icon" data-icon="slides"></span>
+                <span class="badge badge-mastery">PPTX</span>
+              </div>
+              <h4>Lecture slides</h4>
+              <p>PowerPoint texts and speaker notes, cited by slide.</p>
+            </div>
+            <div class="format-card">
+              <div class="fmt-top">
+                <span class="fmt-icon" data-icon="video"></span>
+                <span class="badge badge-outline">COMING SOON</span>
+              </div>
+              <h4>Lecture video</h4>
+              <p>Transcription (Whisper) is planned for a future update.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="banner banner-plain">
+          <span data-icon="shield"></span>
+          <div>
+            <strong>Local-first:</strong> files are stored on your machine and indexed in your
+            own PostgreSQL + pgvector instance — no third-party services.
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/upload.js"></script>
+</body>
+</html>

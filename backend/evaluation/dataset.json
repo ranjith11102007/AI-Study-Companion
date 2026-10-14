@@ -1,0 +1,106 @@
+{
+  "name": "studymate-baseline-v1",
+  "description": "Original, self-authored study passages and questions used by the deterministic evaluation harness. All content is written for this project; no third-party material is included.",
+  "corpus": [
+    {
+      "id": "photosynthesis",
+      "text": "Photosynthesis converts light energy into chemical energy stored as glucose. It takes place in the chloroplasts and releases oxygen as a by-product."
+    },
+    {
+      "id": "chlorophyll",
+      "text": "Chlorophyll is the green pigment inside chloroplasts that absorbs light energy for photosynthesis."
+    },
+    {
+      "id": "cellular_respiration",
+      "text": "Cellular respiration converts glucose and oxygen into ATP, carbon dioxide and water, releasing usable energy for the cell."
+    },
+    {
+      "id": "mitosis",
+      "text": "Mitosis is a type of cell division that produces two genetically identical daughter cells for growth and repair."
+    },
+    {
+      "id": "meiosis",
+      "text": "Meiosis produces gametes with half the normal chromosome number and increases genetic variation through recombination."
+    },
+    {
+      "id": "newton_first",
+      "text": "Newton's first law states that an object remains at rest or in uniform motion unless acted on by a net external force."
+    },
+    {
+      "id": "newton_second",
+      "text": "Newton's second law states that force equals mass multiplied by acceleration."
+    },
+    {
+      "id": "kinetic_energy",
+      "text": "Kinetic energy equals one half times mass times velocity squared."
+    }
+  ],
+  "questions": [
+    {
+      "id": "q_photo_convert",
+      "question": "What does photosynthesis convert light energy into?",
+      "expected_sources": ["photosynthesis"],
+      "answerable": true
+    },
+    {
+      "id": "q_photo_where",
+      "question": "Where does photosynthesis take place and what gas releases?",
+      "expected_sources": ["photosynthesis"],
+      "answerable": true
+    },
+    {
+      "id": "q_chlorophyll",
+      "question": "What pigment absorbs light during photosynthesis?",
+      "expected_sources": ["chlorophyll"],
+      "answerable": true
+    },
+    {
+      "id": "q_respiration_product",
+      "question": "What does cellular respiration produce?",
+      "expected_sources": ["cellular_respiration"],
+      "answerable": true
+    },
+    {
+      "id": "q_mitosis_vs_meiosis",
+      "question": "How is mitosis different from meiosis in chromosome number?",
+      "expected_sources": ["mitosis", "meiosis"],
+      "answerable": true
+    },
+    {
+      "id": "q_newton_first",
+      "question": "What does Newton's first law state?",
+      "expected_sources": ["newton_first"],
+      "answerable": true
+    },
+    {
+      "id": "q_newton_second",
+      "question": "How do you calculate force from mass and acceleration?",
+      "expected_sources": ["newton_second"],
+      "answerable": true
+    },
+    {
+      "id": "q_kinetic",
+      "question": "What is the formula for kinetic energy?",
+      "expected_sources": ["kinetic_energy"],
+      "answerable": true
+    },
+    {
+      "id": "q_energy_ambiguous",
+      "question": "Explain energy.",
+      "expected_sources": ["photosynthesis", "cellular_respiration", "kinetic_energy"],
+      "answerable": true
+    },
+    {
+      "id": "q_unsupported_capital",
+      "question": "What is the capital of France?",
+      "expected_sources": [],
+      "answerable": false
+    },
+    {
+      "id": "q_unsupported_worldcup",
+      "question": "Who won the World Cup in 2018?",
+      "expected_sources": [],
+      "answerable": false
+    }
+  ]
+}

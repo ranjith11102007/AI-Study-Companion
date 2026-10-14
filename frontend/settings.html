@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="settings">
+
+  <main id="page-content">
+    <div class="page-head">
+      <div>
+        <h1>Settings</h1>
+        <p class="sub">Manage your profile and preferences, and check live backend status.</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Profile -->
+      <div class="card card-flush">
+        <div class="card-head"><h3>Profile</h3></div>
+        <div class="card-body stack stack-md">
+          <div class="row row-lg">
+            <span class="avatar" style="width:52px;height:52px;font-size:18px">S</span>
+            <div class="stack" style="gap:0">
+              <strong id="profile-label">Local learner</strong>
+              <span class="t-sm muted">Profile details are stored in this browser.</span>
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label" for="display-name">Display name</label>
+            <input class="input" id="display-name" type="text" placeholder="e.g. Sam"
+                   autocomplete="nickname" />
+            <span class="field-help">Saved in this browser only (localStorage).</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Preferences -->
+      <div class="card card-flush">
+        <div class="card-head"><h3>Preferences</h3></div>
+        <div class="card-body">
+          <div class="setting-row">
+            <div class="setting-info">
+              <h4>Reduce motion</h4>
+              <p>Disables animated transitions and shimmer effects across the app.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" data-pref="reduceMotion" aria-label="Reduce motion" />
+            </label>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <h4>Compact reading size</h4>
+              <p>Adjusts content density for the reading view.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" data-pref="compact" disabled aria-label="Compact reading size" />
+            </label>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <h4>Daily review reminder</h4>
+              <p>Sends a daily reminder — notification delivery is coming soon.</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" data-pref="reminders" data-todo="Reminder delivery is coming soon." aria-label="Daily review reminder" />
+            </label>
+          </div>
+          <p class="t-sm muted mt-md">
+            Preferences are stored in this browser.
+          </p>
+          <button class="btn btn-ghost btn-sm mt-sm" id="reset-prefs">
+            <span data-icon="rotate"></span> Clear local preferences
+          </button>
+        </div>
+      </div>
+
+      <!-- Backend -->
+      <div class="card card-flush">
+        <div class="card-head">
+          <h3>Backend &amp; API</h3>
+          <button class="btn btn-ghost btn-sm" data-health-refresh>
+            <span data-icon="refresh"></span> Re-check
+          </button>
+        </div>
+        <div class="card-body stack stack-md">
+          <div class="stat-grid">
+            <div class="stat">
+              <span class="stat-label">Status</span>
+              <span class="stat-value sm" data-health-field="status">–</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Database</span>
+              <span class="stat-value sm" data-health-field="database">–</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Version</span>
+              <span class="stat-value sm" data-health-field="version">–</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Environment</span>
+              <span class="stat-value sm" data-health-field="environment">–</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">DB latency</span>
+              <span class="stat-value sm" data-health-field="latency">–</span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Checked</span>
+              <span class="stat-value sm" data-health-field="timestamp">–</span>
+            </div>
+          </div>
+          <div class="banner banner-plain">
+            <span data-icon="server"></span>
+            <div>
+              Live values from <span class="mono">GET /api/health</span>. If the backend is
+              down, these fields say so — nothing on this page is hard-coded.
+            </div>
+          </div>
+          <div class="row row-wrap">
+            <a class="btn btn-ghost btn-sm" href="/docs" target="_blank" rel="noopener">
+              <span data-icon="external"></span> API docs
+            </a>
+            <a class="btn btn-quiet btn-sm" href="/api/health" target="_blank" rel="noopener">
+              <span data-icon="external"></span> Raw health JSON
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="card card-flush">
+        <div class="card-head"><h3>About</h3><span class="badge badge-outline">Open source</span></div>
+        <div class="card-body stack stack-md">
+          <div class="stack stack-sm">
+            <strong>StudyMate AI — Personalized Tutoring &amp; Adaptive Learning</strong>
+            <p class="t-sm muted">
+              FastAPI + PostgreSQL/pgvector backend, local inference via Ollama, and a
+              dependency-free HTML/CSS/JS frontend.
+            </p>
+          </div>
+          <div class="row row-wrap" style="gap:6px">
+            <span class="badge badge-neutral">Python</span>
+            <span class="badge badge-neutral">FastAPI</span>
+            <span class="badge badge-neutral">PostgreSQL</span>
+            <span class="badge badge-neutral">pgvector</span>
+            <span class="badge badge-neutral">Ollama</span>
+            <span class="badge badge-neutral">HTML/CSS/JS</span>
+          </div>
+          <hr class="divider" />
+          <div class="stack stack-sm">
+            <span class="t-eyebrow">Data &amp; privacy</span>
+            <p class="t-sm muted">
+              No paid APIs, no telemetry. Local state lives in this browser’s
+              localStorage/sessionStorage until you clear it.
+            </p>
+          </div>
+          <button class="btn btn-danger btn-sm"
+                  data-todo="Account deletion is coming soon.">
+            <span data-icon="trash"></span> Delete account data
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="banner banner-info mt-lg">
+      <span data-icon="info"></span>
+      <div>
+        <strong>Status:</strong> health fields are live; profile and preferences are stored
+        in this browser.
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/settings.js"></script>
+</body>
+</html>

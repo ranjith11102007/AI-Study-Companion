@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="quiz">
+
+  <main id="page-content">
+    <div class="page-head">
+      <div class="stack stack-sm">
+        <nav class="crumbs" aria-label="Breadcrumb" style="margin:0">
+          <a href="assessment.html">Assessments</a>
+          <span data-icon="chevronRight"></span>
+          <span class="current">Quiz in progress</span>
+        </nav>
+        <h1 id="quiz-title">Loading…</h1>
+        <div class="row row-wrap" style="gap:6px" id="quiz-badges"></div>
+      </div>
+      <div class="page-actions">
+        <button class="btn btn-quiet" id="exit-btn"><span data-icon="x"></span> Exit quiz</a></button>
+      </div>
+    </div>
+
+    <div class="state" id="quiz-loading">
+      <span class="state-icon"><span data-icon="clock"></span></span>
+      <span class="state-title">Loading your quiz…</span>
+      <span class="state-text">Fetching the questions for this attempt.</span>
+    </div>
+
+    <div class="state" id="quiz-error" hidden>
+      <span class="state-icon amber"><span data-icon="alert"></span></span>
+      <span class="state-title" id="quiz-error-title">Could not load this quiz</span>
+      <span class="state-text" id="quiz-error-text"></span>
+      <span class="state-actions">
+        <a class="btn btn-primary" href="assessment.html">Back to assessments</a>
+      </span>
+    </div>
+
+    <div class="workspace-2" id="quiz-body" hidden>
+      <!-- Question -->
+      <div class="question-card">
+        <div class="question-head">
+          <div class="row row-wrap" style="gap:8px">
+            <span class="badge badge-neutral" id="q-counter">Question 1 of 1</span>
+            <span class="badge badge-primary" id="q-topic">Topic</span>
+            <span class="badge badge-outline" id="q-difficulty">medium</span>
+          </div>
+          <button class="chip" id="flag-btn" aria-pressed="false">
+            <span data-icon="flag"></span> Flag for review
+          </button>
+        </div>
+        <div class="question-body">
+          <div class="progress" id="q-progress"><span></span></div>
+          <p class="question-text" id="q-text">Loading question…</p>
+          <div id="answer-area"></div>
+          <div class="row row-between mt-sm">
+            <button class="btn btn-ghost" id="prev-btn">
+              <span data-icon="chevronLeft"></span> Previous
+            </button>
+            <button class="btn btn-primary" id="next-btn">
+              Next <span data-icon="chevronRight"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rail -->
+      <div class="stack stack-lg">
+        <div class="card card-flush">
+          <div class="card-head"><h3>Quiz status</h3></div>
+
+          <div class="card-body stack stack-md">
+            <div class="quiz-meta">
+              <div class="qm">
+                <span class="qm-value" id="q-timer">—</span>
+                <span class="qm-label">Time left</span>
+              </div>
+              <div class="qm">
+                <span class="qm-value" id="answered-count">0 / 0</span>
+                <span class="qm-label">Answered</span>
+              </div>
+            </div>
+            <hr class="divider" />
+            <div class="stack stack-sm">
+              <span class="t-eyebrow">Question palette</span>
+              <div class="palette" id="palette"></div>
+            </div>
+            <button class="btn btn-primary btn-block" id="submit-btn">
+              <span data-icon="checkCircle"></span> Submit attempt
+            </button>
+          </div>
+        </div>
+
+        <div class="banner banner-plain">
+          <span data-icon="info"></span>
+          <div>Answers are graded by the backend when you submit. Leaving the page
+            without submitting discards your answers.</div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/quiz.js"></script>
+</body>
+</html>

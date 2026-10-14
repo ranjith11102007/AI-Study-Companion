@@ -1,0 +1,158 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Progress · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="progress">
+
+  <main id="page-content">
+    <div class="page-head">
+      <div>
+        <h1>Progress</h1>
+        <p class="sub">Mastery per topic, computed from your actual graded answers.</p>
+      </div>
+      <div class="page-actions">
+        <label class="stack stack-xs" style="gap:4px">
+          <span class="t-eyebrow">Course</span>
+          <select class="select" id="course-select" aria-label="Course">
+            <option value="">Loading courses…</option>
+          </select>
+        </label>
+        <a class="btn btn-ghost" href="recommendations.html"><span data-icon="target"></span> Weak topics</a>
+        <button class="btn btn-quiet" type="button"
+                data-todo="Flashcards aren't available yet — there is no deck endpoint.">
+          <span data-icon="layers"></span> Flashcards
+        </button>
+      </div>
+    </div>
+
+    <div class="banner banner-warn" id="progress-error" hidden>
+      <span data-icon="alert"></span>
+      <div id="progress-error-text"></div>
+    </div>
+
+    <!-- Empty state: no mastery evidence at all -->
+    <div class="state tinted" id="progress-empty" hidden>
+      <span class="state-icon"><span data-icon="chart"></span></span>
+      <span class="state-title">No mastery data yet</span>
+      <span class="state-text" id="progress-empty-text">
+        Take your first assessment and your per-topic mastery will appear here — nothing is estimated.
+      </span>
+      <span class="state-actions">
+        <a class="btn btn-primary btn-sm" id="empty-assess-link" href="assessment.html">Take your first assessment</a>
+      </span>
+    </div>
+
+    <div id="progress-body" hidden>
+      <div class="section-head">
+        <h2>Snapshot</h2>
+      </div>
+      <div class="stat-grid">
+        <div class="stat">
+          <span class="stat-label"><span data-icon="chart"></span> Mastery average</span>
+          <span class="stat-value" id="stat-mastery-avg">–</span>
+          <span class="stat-hint" id="stat-topics-tracked">No topics tracked</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label"><span data-icon="target"></span> Weak topics</span>
+          <span class="stat-value" id="stat-weak">–</span>
+          <span class="stat-hint">Below target, needs revision</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label"><span data-icon="checkCircle"></span> Strong topics</span>
+          <span class="stat-value" id="stat-strong">–</span>
+          <span class="stat-hint mastery">At or above mastery target</span>
+        </div>
+        <div class="stat">
+          <span class="stat-label"><span data-icon="layers"></span> Untested topics</span>
+          <span class="stat-value" id="stat-untested">–</span>
+          <span class="stat-hint">Assessed, but no graded answers yet</span>
+        </div>
+      </div>
+
+      <div class="grid-2 mt-lg">
+        <div class="card card-flush">
+          <div class="card-head">
+            <h3>Mastery by topic</h3>
+          </div>
+          <div id="mastery-list"></div>
+        </div>
+
+        <div class="stack stack-lg">
+          <div class="card card-flush">
+            <div class="card-head">
+              <h3>Topic status</h3>
+            </div>
+            <div id="status-weak"></div>
+            <div id="status-strong"></div>
+            <div id="status-untested"></div>
+          </div>
+
+          <div class="card card-flush">
+            <div class="card-head"><h3>Mastery over time</h3></div>
+            <div class="card-body">
+              <div class="chart-frame">
+                <div class="chart-msg">
+                  <span data-icon="history"></span>
+                  <span>Trend data appears after a few assessment sessions.</span>
+                </div>
+              </div>
+              <p class="t-sm muted mt-sm">
+                This line will be drawn from per-week mastery snapshots once enough sessions exist.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 mt-lg">
+        <div class="card card-flush">
+          <div class="card-head">
+            <h3>Review queue</h3>
+            <span class="badge badge-outline">Flashcards</span>
+          </div>
+          <div class="card-body">
+            <div class="state compact">
+              <span class="state-icon amber"><span data-icon="layers"></span></span>
+              <span class="state-title">Not available yet</span>
+              <span class="state-text">
+                There is no flashcards endpoint yet, so no review queue can be built. This stays
+                empty until the feature exists — nothing here is estimated.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-flush">
+          <div class="card-head"><h3>How mastery is computed</h3></div>
+          <div class="card-body stack stack-sm">
+            <div class="row" style="gap:10px;align-items:flex-start">
+              <span class="mastery" data-icon="checkCircle"></span>
+              <span class="t-sm">Every graded answer updates a Bayesian model per topic.</span>
+            </div>
+            <div class="row" style="gap:10px;align-items:flex-start">
+              <span class="mastery" data-icon="checkCircle"></span>
+              <span class="t-sm">Weak / strong classification needs at least two graded answers.</span>
+            </div>
+            <div class="row" style="gap:10px;align-items:flex-start">
+              <span class="mastery" data-icon="checkCircle"></span>
+              <span class="t-sm">Untested topics were assigned in assessment content but have no graded evidence yet.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/progress.js"></script>
+</body>
+</html>

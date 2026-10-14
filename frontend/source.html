@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Source viewer · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="source">
+
+  <main id="page-content">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="courses.html">Courses</a>
+      <span data-icon="chevronRight"></span>
+      <a href="course.html" id="crumb-course">Course</a>
+      <span data-icon="chevronRight"></span>
+      <span class="current" id="page-sub">Source</span>
+    </nav>
+
+    <div class="page-head">
+      <div>
+        <h1 id="viewer-title">Source viewer</h1>
+        <p class="sub">The exact passage a citation points to — page, slide or timestamp.</p>
+      </div>
+      <div class="page-actions">
+        <a class="btn btn-quiet" href="tutor.html"><span data-icon="arrowLeft"></span> Back to tutor</a>
+      </div>
+    </div>
+
+    <div class="state" id="source-loading">
+      <span class="state-icon"><span data-icon="clock"></span></span>
+      <span class="state-title">Loading source…</span>
+    </div>
+
+    <div class="state" id="source-error" hidden>
+      <span class="state-icon amber"><span data-icon="alert"></span></span>
+      <span class="state-title" id="error-title">Source not found</span>
+      <span class="state-text" id="error-text">
+        This citation could not be resolved. It may belong to material that was deleted.
+      </span>
+      <span class="state-actions">
+        <a class="btn btn-primary" href="tutor.html">Back to tutor</a>
+        <a class="btn btn-ghost" href="courses.html">Browse courses</a>
+      </span>
+    </div>
+
+    <div class="viewer" id="viewer" hidden>
+      <aside class="viewer-outline">
+        <div class="stack stack-xs">
+          <span class="t-eyebrow">Source</span>
+          <strong class="t-sm" id="side-title">—</strong>
+          <span class="t-sm muted" id="side-meta">—</span>
+        </div>
+        <hr class="divider" />
+        <div class="stack stack-sm">
+          <span class="t-eyebrow">Location</span>
+          <span class="badge badge-neutral" id="side-location">—</span>
+          <span class="t-sm muted" id="side-type">—</span>
+        </div>
+        <div class="banner banner-plain" style="font-size:12px">
+          <span data-icon="target"></span>
+          <div>The cited passage is shown in the viewer.</div>
+        </div>
+      </aside>
+
+      <div class="viewer-main">
+        <div class="viewer-toolbar">
+          <span class="vt-title truncate" id="toolbar-title">—</span>
+          <span class="badge badge-neutral" id="toolbar-type">—</span>
+          <span class="spacer"></span>
+          <span class="badge badge-primary" id="toolbar-location">—</span>
+        </div>
+
+        <div class="viewer-canvas">
+          <article style="max-width:680px;width:100%;text-align:left">
+            <span class="t-eyebrow" id="page-heading">Passage</span>
+            <div class="stack stack-sm mt-sm" style="font-size:14.5px;line-height:26px;color:#334155" id="page-body"></div>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="row row-wrap mt-lg" id="source-actions" hidden>
+      <a class="btn btn-ghost" id="ask-link" href="tutor.html">
+        <span data-icon="chat"></span> Ask the tutor about this course
+      </a>
+      <a class="btn btn-quiet" id="course-link" href="course.html">
+        <span data-icon="book"></span> Back to course
+      </a>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/source.js"></script>
+</body>
+</html>

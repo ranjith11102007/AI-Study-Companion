@@ -1,0 +1,128 @@
+/* ==========================================================================
+   StudyMate AI — Design tokens
+   Derived from the Stitch reference: stitch_studymate_ai_learning_platform/
+   academic_intelligence/DESIGN.md (UI/UX reference only).
+   ========================================================================== */
+
+:root {
+  /* --- Brand & semantic colors --- */
+  --primary: #6366f1;
+  --primary-strong: #4f46e5;
+  --primary-deep: #4338ca;
+  --primary-soft: #eef2ff;
+  --primary-tint: #e1e0ff;
+  --primary-ring: rgba(99, 102, 241, 0.12);
+  --primary-halo: rgba(99, 102, 241, 0.15);
+
+  --ink: #0f172a;
+  --ink-soft: #1e293b;
+  --muted: #64748b;
+  --muted-soft: #94a3b8;
+
+  --canvas: #f8fafc;
+  --subpanel: #f1f5f9;
+  --white: #ffffff;
+  --line: #e2e8f0;
+  --line-strong: #cbd5e1;
+
+  --mastery: #10b981;
+  --mastery-soft: #ecfdf5;
+  --mastery-ink: #047857;
+  --mastery-line: #a7f3d0;
+
+  --amber: #f59e0b;
+  --amber-soft: #fffbeb;
+  --amber-ink: #b45309;
+  --amber-line: #fde68a;
+
+  --rose: #ef4444;
+  --rose-soft: #fef2f2;
+  --rose-ink: #b91c1c;
+  --rose-line: #fecaca;
+
+  /* --- Soft tints (from reference token sheet) --- */
+  --tint-1: #eff4ff;
+  --tint-2: #e5eeff;
+  --tint-3: #dce9ff;
+  --tint-4: #d3e4fe;
+  --sec-container: #dae2fd;
+  --sec-container-ink: #3f465c;
+
+  /* --- Typography --- */
+  --font-display: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+  --fs-display: 48px;
+  --lh-display: 56px;
+  --fs-h1: 36px;
+  --lh-h1: 44px;
+  --fs-h2: 24px;
+  --lh-h2: 32px;
+  --fs-h3: 20px;
+  --lh-h3: 28px;
+  --fs-body-lg: 16px;
+  --lh-body-lg: 26px;
+  --fs-body: 14px;
+  --lh-body: 22px;
+  --fs-sm: 12px;
+  --lh-sm: 18px;
+
+  /* --- Spacing --- */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2.5rem;
+  --gutter: 24px;
+  --margin: 32px;
+  --content-max: 1440px;
+  --rail-w: 248px;
+
+  /* --- Radii --- */
+  --r-sm: 0.25rem;
+  --r: 0.5rem;
+  --r-md: 0.75rem;
+  --r-lg: 1rem;
+  --r-xl: 1.5rem;
+  --r-full: 9999px;
+
+  /* --- Elevation --- */
+  --shadow-hair: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.03);
+  --shadow-float: 0 12px 24px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(99, 102, 241, 0.08);
+  --shadow-pop: 0 8px 24px rgba(15, 23, 42, 0.1);
+  --focus-glow: 0 0 0 3px var(--primary-ring);
+
+  /* --- Motion --- */
+  --ease: cubic-bezier(0.2, 0.6, 0.3, 1);
+  --speed: 160ms;
+
+  /* --- Shell --- */
+  --topbar-h: 64px;
+  --bottomnav-h: 62px;
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --gutter: 16px;
+    --margin: 24px;
+    --fs-display: 36px;
+    --lh-display: 44px;
+    --fs-h1: 30px;
+    --lh-h1: 38px;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --gutter: 16px;
+    --margin: 16px;
+    --fs-display: 32px;
+    --lh-display: 40px;
+    --fs-h1: 26px;
+    --lh-h1: 34px;
+    --fs-h2: 22px;
+    --lh-h2: 30px;
+  }
+}

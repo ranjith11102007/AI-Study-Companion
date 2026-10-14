@@ -1,0 +1,126 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI tutor · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="tutor">
+
+  <main id="page-content">
+    <div class="page-head">
+      <div>
+        <h1>AI tutor</h1>
+        <p class="sub">Answers are generated from your indexed material, with a citation to the exact passage.</p>
+      </div>
+      <div class="page-actions">
+        <label class="stack stack-xs" style="gap:4px">
+          <span class="t-eyebrow">Course</span>
+          <select class="select" id="course-select" aria-label="Course">
+            <option value="">Loading courses…</option>
+          </select>
+        </label>
+        <button class="btn btn-ghost" id="new-chat" type="button"><span data-icon="plus"></span> New chat</button>
+      </div>
+    </div>
+
+    <div class="workspace-2">
+      <!-- Chat -->
+      <div class="card card-flush">
+        <div class="card-head">
+          <div class="stack" style="gap:2px">
+            <h3 id="thread-title">Tutor conversation</h3>
+            <span class="t-sm muted" id="thread-sub">Ask a question about the selected course.</span>
+          </div>
+          <span class="ai-pill idle" id="tutor-status"><span class="dot6"></span><span data-status-text>Ready</span></span>
+        </div>
+
+        <div class="card-body stack stack-lg">
+          <div class="state tinted" id="thread-empty">
+            <span class="state-icon"><span data-icon="chat"></span></span>
+            <span class="state-title">No messages yet</span>
+            <span class="state-text">
+              Ask about the selected course. If the answer isn't in your indexed material,
+              the tutor says so instead of guessing.
+            </span>
+            <span class="state-actions">
+              <a class="btn btn-primary btn-sm" href="upload.html">Upload material</a>
+            </span>
+          </div>
+
+          <div class="chat-scroll" id="chat-thread" hidden></div>
+
+          <form class="composer" id="composer-form">
+            <div class="composer-row">
+              <input type="text" id="composer-input" placeholder="Ask a question about this course…"
+                     autocomplete="off" aria-label="Your question" />
+              <button class="btn btn-primary" type="submit" id="ask-btn">
+                <span data-icon="send"></span> Ask
+              </button>
+            </div>
+            <div class="composer-foot">
+              <span class="lock"><span data-icon="shield"></span> Grounded in your indexed sources</span>
+              <span>Enter to send</span>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Rail -->
+      <div class="stack stack-lg">
+        <div class="card card-flush">
+          <div class="card-head">
+            <h3>Conversations</h3>
+            <button class="btn btn-quiet btn-sm" id="refresh-conversations" type="button">
+              <span data-icon="refresh"></span> Refresh
+            </button>
+          </div>
+          <div class="list" id="conversation-list">
+            <div class="list-item">
+              <span class="item-main">
+                <span class="item-title">No conversations yet</span>
+                <span class="item-sub">Ask a question to start one.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card card-flush">
+          <div class="card-head"><h3>Grounding rules</h3></div>
+          <div class="card-body stack stack-sm">
+            <div class="row" style="gap:10px;align-items:flex-start">
+              <span class="mastery" data-icon="checkCircle"></span>
+              <span class="t-sm">Answers come only from your indexed sources.</span>
+            </div>
+            <div class="row" style="gap:10px;align-items:flex-start">
+              <span class="mastery" data-icon="checkCircle"></span>
+              <span class="t-sm">Every grounded answer carries a passage citation.</span>
+            </div>
+            <div class="row" style="gap:10px;align-items:flex-start">
+              <span class="mastery" data-icon="checkCircle"></span>
+              <span class="t-sm">If it isn't in your material, it says so instead of guessing.</span>
+            </div>
+          </div>
+        </div>
+
+        <a class="tile" href="assessment.html">
+          <span class="tile-icon amber"><span data-icon="quiz"></span></span>
+          <h3>Test yourself</h3>
+          <p>Turn the same material into a verified quiz with explanations.</p>
+          <span class="tile-foot"><span class="badge badge-warn">Assessment</span>
+            <span class="muted" data-icon="chevronRight"></span></span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/tutor.js"></script>
+</body>
+</html>

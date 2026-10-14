@@ -1,0 +1,33 @@
+# --- Auth ---
+passlib[bcrypt]==1.7.4
+python-jose[cryptography]==3.3.0
+bcrypt==4.0.1
+
+# --- Core web stack ---
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+pydantic==2.10.4
+pydantic-settings==2.7.1
+python-multipart==0.0.20
+
+# --- PostgreSQL (async) ---
+SQLAlchemy==2.0.36
+asyncpg==0.30.0
+pgvector==0.5.0
+
+# --- Database migrations ---
+alembic==1.20.0
+
+# --- Local AI / HTTP ---
+httpx==0.28.1
+
+# --- Ingestion: PDF + PPTX + images + text (Tesseract OCR engine required on Windows) ---
+pytesseract==0.3.13
+Pillow==11.1.0
+pypdf==5.1.0
+python-pptx==1.0.2        # PowerPoint (.pptx) text + speaker notes
+# --- Future formats (install only when needed) ---
+# openai-whisper==20240930 # lecture video transcription (uses local models)
+
+# --- Evaluation (added when RAGAS evaluation phase starts) ---
+# ragas==0.2.x
