@@ -85,6 +85,17 @@ class Settings(BaseSettings):
     ollama_chat_model: str = "llama3.2"
     ollama_embed_model: str = "nomic-embed-text"
     embedding_dimension: int = 768
+    # Maximum passages sent in a single embedding request. Providers that use
+    # OpenAI-compatible batching disclose a hard ceiling here: Gemini's
+    # ``/v1beta/openai/embeddings`` answers HTTP 400 ("at most 100 requests can
+    # be in one batch") for more than 100. Raising/lowering this only affects
+    # how the pipeline splits a document; it never changes the vectors.
+    embedding_batch_size: int = 100
+    # Rate-limited embedding APIs (Gemini free tier: ~100/minute) answer 429
+    # when a large document needs more than one request. Retrying with
+    # exponential backoff lets the document finish instead of failing.
+    embedding_max_attempts: int = 4
+    embedding_retry_base_seconds: float = 5.0
 
     # AI runtime selection. "ollama" = local server (default, local-first);
     # "openai" = any OpenAI-compatible HTTP API (OpenAI, Groq, OpenRouter,

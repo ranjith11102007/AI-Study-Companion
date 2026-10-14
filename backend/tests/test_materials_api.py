@@ -2,6 +2,7 @@
 
 import uuid
 
+import httpx
 import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import delete
@@ -21,6 +22,53 @@ class _FakeEmbeddingProvider:
 
     async def embed(self, texts: list[str]) -> list[list[float]]:
         return [[0.0] * 768 for _ in texts]
+
+
+class _BatchLimitedEmbeddingProvider:
+    """Reproduces the hosted Gemini ``/v1beta/openai/embeddings`` behaviour.
+
+    When a single request carries more than 100 inputs, Gemini answers
+    ``HTTP 400 * BatchEmbedContentsRequest.requests: at most 100 requests can
+    be in one batch``. That is exactly what used to leave a 41-page PDF stuck
+    at "failed, 0 chunks" while a small file indexed fine.
+    """
+
+    model = "stub-batch-limited-100"
+    batch_sizes: list[int] = []
+
+    async def embed(self, texts: list[str]) -> list[list[float]]:
+        type(self).batch_sizes.append(len(texts))
+        if len(texts) > 100:
+            request = httpx.Request(
+                "POST", "https://gemini.test/v1beta/openai/embeddings"
+            )
+            response = httpx.Response(
+                400,
+                request=request,
+                text=(
+                    "* BatchEmbedContentsRequest.requests: "
+                    "at most 100 requests can be in one batch\n"
+                ),
+            )
+            raise httpx.HTTPStatusError(
+                "Client error '400 Bad Request'", request=request, response=response
+            )
+        return [[0.0] * 768 for _ in texts]
+
+
+class _RejectingEmbeddingProvider:
+    """Always fails, to prove failures are reported accurately and retryably."""
+
+    model = "stub-rejecting"
+
+    async def embed(self, texts: list[str]) -> list[list[float]]:
+        request = httpx.Request(
+            "POST", "https://gemini.test/v1beta/openai/embeddings"
+        )
+        response = httpx.Response(429, request=request, text="quota exceeded")
+        raise httpx.HTTPStatusError(
+            "Client error '429 Too Many Requests'", request=request, response=response
+        )
 
 
 @pytest.fixture
@@ -351,3 +399,111 @@ async def test_reprocess_is_owner_scoped(fake_embeddings):
     finally:
         await _cleanup(email_a)
         await _cleanup(email_b)
+
+
+@pytest.mark.asyncio
+async def test_upload_with_more_than_100_chunks_is_batched(monkeypatch):
+    """Regression: one embedding request per document broke on >100 chunks.
+
+    A 41-page text PDF produced 106 chunks, which Gemini's OpenAI-compatible
+    endpoint rejects outright. The document must still index (in batches)
+    rather than being marked failed.
+    """
+    monkeypatch.setattr(
+        pipeline, "get_embedding_provider", _BatchLimitedEmbeddingProvider
+    )
+    _BatchLimitedEmbeddingProvider.batch_sizes = []
+
+    paragraph = "word " * 120  # ~600 chars -> one chunk per paragraph
+    body = ("\n\n".join(paragraph for _ in range(200))).encode("utf-8")
+    assert len(body) > 100_000
+
+    email = f"mat-{uuid.uuid4().hex[:8]}@example.com"
+    transport = ASGITransport(app=app)
+    try:
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            headers = await _make_user(client, email)
+            course = (
+                await client.post(
+                    "/api/courses/", json={"title": "COA Unit 3"}, headers=headers
+                )
+            ).json()
+
+            response = await client.post(
+                f"/api/courses/{course['id']}/materials",
+                files={"file": ("coa-unit-3.txt", body, "text/plain")},
+                headers=headers,
+            )
+            assert response.status_code == 201, response.text
+            material = response.json()
+
+            detail = (
+                await client.get(f"/api/materials/{material['id']}", headers=headers)
+            ).json()
+            assert detail["processing_status"] == "ready", detail
+            assert detail["content_unit_count"] > 100
+            assert not detail["processing_error"]
+
+            sizes = _BatchLimitedEmbeddingProvider.batch_sizes
+            assert sizes, "the embedding provider was never called"
+            assert max(sizes) <= 100
+            assert sum(sizes) == detail["content_unit_count"]
+    finally:
+        await _cleanup(email)
+
+
+@pytest.mark.asyncio
+async def test_failed_indexing_reports_the_cause_and_retries_cleanly(monkeypatch):
+    """A failed attempt stores an actionable reason and can be retried."""
+    monkeypatch.setattr(pipeline, "get_embedding_provider", _RejectingEmbeddingProvider)
+
+    email = f"mat-{uuid.uuid4().hex[:8]}@example.com"
+    transport = ASGITransport(app=app)
+    try:
+        async with AsyncClient(transport=transport, base_url="http://test") as client:
+            headers = await _make_user(client, email)
+            course = (
+                await client.post(
+                    "/api/courses/", json={"title": "OS Notes"}, headers=headers
+                )
+            ).json()
+
+            response = await client.post(
+                f"/api/courses/{course['id']}/materials",
+                files={
+                    "file": (
+                        "os.txt",
+                        b"Operating System Concepts: a process is a program.",
+                        "text/plain",
+                    )
+                },
+                headers=headers,
+            )
+            assert response.status_code == 201, response.text
+            material = response.json()
+
+            failed = (
+                await client.get(f"/api/materials/{material['id']}", headers=headers)
+            ).json()
+            assert failed["processing_status"] == "failed"
+            assert failed["content_unit_count"] == 0
+            assert "429" in failed["processing_error"]
+            assert "Traceback" not in failed["processing_error"]
+
+            # The operator fixes the provider; the user clicks Retry.
+            monkeypatch.setattr(
+                pipeline, "get_embedding_provider", _FakeEmbeddingProvider
+            )
+            retry = await client.post(
+                f"/api/materials/{material['id']}/reprocess", headers=headers
+            )
+            assert retry.status_code == 200, retry.text
+
+            recovered = (
+                await client.get(f"/api/materials/{material['id']}", headers=headers)
+            ).json()
+            assert recovered["processing_status"] == "ready", recovered
+            assert recovered["content_unit_count"] == 1
+            assert not recovered["processing_error"]
+    finally:
+        await _cleanup(email)

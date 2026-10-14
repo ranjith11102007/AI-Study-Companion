@@ -71,6 +71,7 @@ returns a clear error; everything else works.
 | `OLLAMA_BASE_URL` | default `http://127.0.0.1:11434` |
 | `OLLAMA_CHAT_MODEL`, `OLLAMA_EMBED_MODEL` | model names |
 | `EMBEDDING_DIMENSION` | must equal the DB vector dimension (768) |
+| `EMBEDDING_BATCH_SIZE`, `EMBEDDING_MAX_ATTEMPTS`, `EMBEDDING_RETRY_BASE_SECONDS` | indexing batches chunks and retries transient embedding failures (defaults 100 / 4 / 5.0 work with Gemini's 100-per-batch, ~100/min free tier) |
 | `RETRIEVAL_TOP_K`, `RETRIEVAL_MIN_SCORE` | retrieval tuning |
 | `TUTOR_MAX_CONTEXT_CHARS`, `TUTOR_MAX_TOKENS`, `TUTOR_TEMPERATURE` | generation limits |
 | `ALLOWED_MATERIAL_EXTENSIONS`, `MAX_UPLOAD_SIZE_MB` | upload policy |

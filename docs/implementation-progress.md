@@ -4,12 +4,11 @@ This document records the repository audit, the phased implementation plan and t
 state of the upgrade work. It is the resumption point for the next session: read this first,
 then re-run the test suite before continuing.
 
-Last updated: **all phases complete. Phase 8 (frontend wiring) was done in three parallel
-workstreams; terminal 1 (backend + routing + streaming) is done, and terminals 2 and 3
-have reported done — a consolidation pass then fixed a `frontend/js/shell.js` syntax error
-and stale bare-header links they introduced (see "Consolidation fixes"). 60 tests
-collected; the suite is green apart from transient remote-DB network drops (retried
-automatically — see docs/testing.md).
+Last updated: **all phases complete**, and a follow-up PDF-ingestion bug is fixed:
+embedding requests are now batched and retried, with per-stage diagnostics (see
+"PDF ingestion: batching + per-stage diagnostics"). The full suite is **94 passed**
+(up from 78) apart from transient remote-DB network drops (retried automatically —
+see docs/testing.md).
 
 ---
 
@@ -376,6 +375,82 @@ lopsided page that was reported.
 - Real Chrome (Puppeteer) layout test at 1440 / 1280 / 900 / 768 / 375px: no horizontal overflow
   anywhere, panel = 41.7% on desktop/tablet and hidden at ≤767px, card = 470px on desktop, no
   vertical scroll, and both pages are geometrically identical at every viewport.
+
+---
+
+## PDF ingestion: batching + per-stage diagnostics (follow-up bug report)
+
+**Report:** `COA UNIT 3.pdf` (41 pages) showed up **twice** on the Course Materials
+page with `0 chunks`, **Failed**, and the generic `Indexing failed — see the server
+log for details.` Both rows (ids 137 and 138, course 220, created 09:11 and 09:35 UTC)
+were written by the **hosted** app, so their files only ever existed in the ephemeral
+Render container and cannot be recovered.
+
+**Root cause (proved, not guessed).** `backend/app/ingestion/pipeline.py` sent **all**
+chunks to `provider.embed([...])` in a single request. Gemini's OpenAI-compatible
+endpoint caps a batch at 100 inputs, so the 106 chunks of this PDF were rejected:
+
+```
+2026-10-14 09:35:24 | ERROR | app.ingestion.pipeline | Material 138 ingestion failed:
+Client error '400 Bad Request' for url
+'https://generativelanguage.googleapis.com/v1beta/openai/embeddings'
+```
+
+A direct HTTP replay against the same endpoint/key confirmed the boundary:
+`n=1/16/20 → 200`, `n=100 → 200`, `n=101/106/150 → 400
+* BatchEmbedContentsRequest.requests: at most 100 requests can be in one batch`.
+The vague user message came from the old `_user_safe_error` fallback — an
+`httpx.HTTPStatusError` matched none of its token checks. (The file itself is fine:
+41 pages, 58,745 raw chars, 0 NUL/control chars, 106 units.)
+
+**Fix — provider-agnostic, in the pipeline:**
+
+- `backend/app/core/config.py` — new settings: `EMBEDDING_BATCH_SIZE=100`,
+  `EMBEDDING_MAX_ATTEMPTS=4`, `EMBEDDING_RETRY_BASE_SECONDS=5.0`.
+- `backend/app/ingestion/pipeline.py` —
+  - `_embed_all()` splits texts into `EMBEDDING_BATCH_SIZE` batches (order preserved).
+  - `_embed_batch()` retries rate-limit / transient failures (408/425/429/5xx,
+    `httpx.TimeoutException`) with exponential backoff (`base * 3^(n-1)`, capped at
+    60s). This matters because the Gemini free tier budgets ~100 embedding requests
+    per minute: a 106-chunk document needs two calls about a minute apart, and
+    without a retry it would still fail (429 instead of 400).
+  - A `Stage` enum (`FILE_VALIDATION`, `FILE_STORAGE`, `TEXT_EXTRACTION`,
+    `TEXT_CHUNKING`, `EMBEDDING_GENERATION`, `VECTOR_STORAGE`, `DATABASE_UPDATE`)
+    tags each step; failures are logged with `logger.exception(... stage, type,
+    detail)` and `_error_detail()` (HTTP status + provider body, server log only,
+    600-char cap — never the document text).
+  - `_user_safe_error(exc, stage)` now returns an actionable message for each case
+    (429 → wait and retry; 401/403 → bad key; 400 "at most 100" → lower
+    `EMBEDDING_BATCH_SIZE`; 400 "dimension" → fix `EMBEDDING_DIMENSION`; 5xx →
+    try later; Ollama down → start Ollama; encoding → re-upload) and otherwise names
+    the stage. No secrets and no document contents are ever returned.
+  - Re-indexing stays idempotent (delete-then-reinsert), so a failed attempt is
+    retryable and never duplicates chunks or the material row.
+
+**Docs:** `backend/.env.example`, `backend/.env.production.example` and
+`docs/deployment.md` document the three new settings and the Gemini free-tier
+batching/rate-limit behaviour.
+
+**Tests (mock/unit and API):**
+
+- `backend/tests/test_ingestion.py` — `_embed_all` batch splitting + order,
+  `_embed_batch` retry / give-up / non-retryable, and `_user_safe_error` /
+  `_error_detail` mappings (429, 401, "at most 100", stage naming, Ollama connect).
+- `backend/tests/test_materials_api.py` — `_BatchLimitedEmbeddingProvider` (real
+  `httpx.HTTPStatusError` 400 above 100 inputs) proves a 100+ chunk upload is
+  batched and reaches `ready`; `_RejectingEmbeddingProvider` (always 429) proves a
+  failed upload reports the cause in `processing_error`, writes `0` chunks, and is
+  then **retryable** to `ready` with exactly `1` chunk.
+- **Full suite: 94 passed** (up from 78), no regressions; `ruff` clean.
+
+**Real end-to-end verification (not mocked).** A throwaway account/course on the
+real shared Supabase/pgvector DB, the real `COA UNIT 3.pdf` and the real Gemini
+`openai` provider: extraction produced 106 units; the log showed
+`Embedding request failed (HTTPStatusError); retrying in 5.0s (1/4)` then
+`15.0s (2/4)`; the material finished `status=ready chunks=106`; retrieval returned 5
+scored chunks (0.766, 0.741 — pipelining / ID / IF stages). Throwaway rows were
+then removed; the original failed rows 137/138 were left untouched for the user to
+delete and re-upload.
 
 ---
 
