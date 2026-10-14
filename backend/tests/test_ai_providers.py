@@ -132,7 +132,7 @@ async def test_provider_health_uses_openai_status_when_configured(monkeypatch):
     monkeypatch.setattr(providers.settings, "chat_provider", "openai")
 
     def handler(request: httpx.Request) -> httpx.Response:
-        return httpx.Response(200, json={"data": [{"id": "gemini-2.0-flash"}]})
+        return httpx.Response(200, json={"data": [{"id": "gemini-flash-latest"}]})
 
     transport = _transport(handler)
 

@@ -35,9 +35,13 @@ services:
       - key: OPENAI_BASE_URL
         value: https://generativelanguage.googleapis.com/v1beta/openai
       - key: OPENAI_CHAT_MODEL
-        value: gemini-2.0-flash
+        value: gemini-flash-latest
+      # gemini-embedding-001 defaults to 3072 dims; ask for 768 (verified) to
+      # match the DB vector column.
       - key: OPENAI_EMBED_MODEL
-        value: text-embedding-004
+        value: gemini-embedding-001
+      - key: OPENAI_EMBED_DIMENSION
+        value: "768"
       - key: OPENAI_API_KEY
         sync: false
       # --- Hardening ---

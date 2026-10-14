@@ -115,8 +115,8 @@ nothing changes (Ollama stays the default).
 | ----- | ----------- | ----- |
 | Host (API + frontend) | **Render** free web service (Docker) | 512 MB RAM, sleeps after ~15 min idle → 30–60 s cold start |
 | Database | **Supabase** or **Neon** free Postgres + pgvector | you already use Supabase — reuse it |
-| Chat AI | **Google Gemini** (`gemini-2.0-flash`) free tier | OpenAI-compatible endpoint; no paid API |
-| Embeddings | **Google Gemini** `text-embedding-004` | 768-dim, matches the existing vector column |
+| Chat AI | **Google Gemini** (`gemini-flash-latest`) free tier | OpenAI-compatible endpoint; no paid API |
+| Embeddings | **Google Gemini** `gemini-embedding-001` (`dimensions=768`) | 768-dim, matches the vector column |
 | File storage | container disk (**ephemeral**) | uploads are lost on redeploy — see limitations |
 
 > **Trade-off, stated plainly:** a hosted app is no longer "local-first /
@@ -165,6 +165,11 @@ docker run --rm -p 8000:8000 --env-file backend/.env.production studymate
   restart wipes uploaded files (the DB rows remain, but the file is gone → a
   material shows the "stored file is missing" reason). Persist to Supabase
   Storage / Cloudflare R2 before real use, or accept that uploads are transient.
+- **Changing the embedding model invalidates existing vectors.** nomic-embed-text
+  (local) and gemini-embedding-001 (hosted) are *different* vector spaces even
+  though both are 768-dim, so similarity search across the two is meaningless.
+  After pointing at a new provider, **re-index every material** (`POST
+  /api/materials/{id}/reprocess`) so the whole course is embedded in one space.
 - **Free-tier rate limits:** the Gemini free tier throttles requests; the tutor
   and assessment generation can hit `429`s under load.
 - **Per-process rate limiting:** each host process has its own limiter.

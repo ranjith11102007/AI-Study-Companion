@@ -182,7 +182,7 @@ class OpenAICompatibleEmbeddingProvider(EmbeddingProvider):
             raise RuntimeError(
                 f"Embedding dimension {len(vectors[0])} does not match the "
                 f"configured {self.dimension}. Choose a {self.dimension}-dim "
-                "model (e.g. Gemini text-embedding-004) or set EMBEDDING_DIMENSION."
+                "model (e.g. Gemini gemini-embedding-001 with dimensions=768) or set EMBEDDING_DIMENSION."
             )
         return vectors
 
