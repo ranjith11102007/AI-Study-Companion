@@ -80,6 +80,40 @@
     { id: "progress", label: "Progress", href: "progress.html", icon: "chart" }
   ];
 
+  /* Auth pages (login / sign up) share one two-column layout: the same header,
+     promotional panel and form-card styling. Only the copy and the form differ.
+     The panel is rendered here so the markup is never duplicated per page. */
+  var AUTH_ASIDE = {
+    login: {
+      heading: "Pick up where you left off.",
+      sub: "One workspace for your sources, tutor conversations, assessments and " +
+        "mastery map — all stored locally."
+    },
+    signup: {
+      heading: "Start your learning journey.",
+      sub: "Create your personal study workspace and turn your learning materials " +
+        "into lasting knowledge."
+    }
+  };
+
+  var AUTH_POINTS = [
+    {
+      icon: "lock",
+      title: "Local-first by design",
+      text: "Your materials and study data live on your machine — not on a paid cloud."
+    },
+    {
+      icon: "chat",
+      title: "Cited answers only",
+      text: "Every tutor response points back to a page, slide or timestamp in your sources."
+    },
+    {
+      icon: "chart",
+      title: "Progress you can prove",
+      text: "Mastery is computed from your actual answers, question by question."
+    }
+  ];
+
   function ico(name) { return global.StudyIcons ? global.StudyIcons.svg(name) : ""; }
 
   function isActive(item, page) {
@@ -189,6 +223,35 @@
     );
   }
 
+  function authAsideHtml(page) {
+    var cfg = AUTH_ASIDE[page];
+    if (!cfg) return "";
+    var points = AUTH_POINTS.map(function (p) {
+      return (
+        '<div class="auth-point">' +
+        '<span class="ap-icon">' + ico(p.icon) + "</span>" +
+        "<div>" +
+        "<h4>" + p.title + "</h4>" +
+        "<p>" + p.text + "</p>" +
+        "</div></div>"
+      );
+    }).join("");
+    return (
+      '<aside class="auth-aside">' +
+      "<div>" +
+      '<span class="ai-pill"><span class="dot6"></span> StudyMate AI</span>' +
+      '<h2 class="t-h1 mt-md">' + cfg.heading + "</h2>" +
+      '<p class="aside-sub mt-sm">' + cfg.sub + "</p>" +
+      "</div>" +
+      '<div class="auth-points">' + points + "</div>" +
+      '<div class="aside-foot">' +
+      ico("shield") +
+      "<span>Free &amp; open-source · no paid APIs · runs on your own infrastructure</span>" +
+      "</div>" +
+      "</aside>"
+    );
+  }
+
   function mount() {
     var body = document.body;
     var shell = body.getAttribute("data-shell") || "bare";
@@ -268,10 +331,17 @@
       header.innerHTML = bareHeaderHtml(page);
       body.insertBefore(header, body.firstChild);
 
-      var footerBare = document.createElement("footer");
-      footerBare.className = "footer";
-      footerBare.innerHTML = footerHtml();
-      body.appendChild(footerBare);
+      /* Auth pages get the shared promotional panel and fill the viewport;
+         the landing page keeps the marketing footer. */
+      if (AUTH_ASIDE[page]) {
+        var authRoot = body.querySelector(".auth");
+        if (authRoot) authRoot.insertAdjacentHTML("afterbegin", authAsideHtml(page));
+      } else {
+        var footerBare = document.createElement("footer");
+        footerBare.className = "footer";
+        footerBare.innerHTML = footerHtml();
+        body.appendChild(footerBare);
+      }
     }
 
     bindCommon(body);

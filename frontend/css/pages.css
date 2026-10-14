@@ -124,8 +124,11 @@
 .auth {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  min-height: calc(100vh - var(--topbar-h));
+  /* Full viewport minus the header (whose 1px bottom border adds to its height). */
+  min-height: calc(100vh - var(--topbar-h) - 1px);
 }
+/* If the promotional panel is ever absent, let the form span the full width. */
+.auth > .auth-main:only-child { grid-column: 1 / -1; }
 .auth-aside {
   background:
     radial-gradient(500px 320px at 20% 0%, rgba(99, 102, 241, 0.35), transparent 65%),
@@ -166,6 +169,7 @@
   align-items: center;
   gap: 8px;
 }
+.auth-aside .aside-foot svg { width: 14px; height: 14px; flex: none; }
 
 .auth-main {
   display: flex;
@@ -176,7 +180,7 @@
 }
 .auth-card {
   width: 100%;
-  max-width: 440px;
+  max-width: 470px;
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: var(--r-xl);
@@ -194,8 +198,17 @@
 }
 
 @media (max-width: 1023px) {
+  .auth-aside { padding: 36px var(--space-lg); gap: 22px; }
+  .auth-aside h2 { font-size: 24px; line-height: 32px; }
+  .auth-main { padding: 36px var(--space-lg); }
+  .auth-card { padding: 28px; }
+}
+
+@media (max-width: 767px) {
   .auth { grid-template-columns: minmax(0, 1fr); }
   .auth-aside { display: none; }
+  .auth-main { padding: 24px var(--gutter); align-items: flex-start; }
+  .auth-card { max-width: 100%; padding: 24px; }
 }
 
 /* --------------------------------------------------------------------------

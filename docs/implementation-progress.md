@@ -345,6 +345,40 @@ dimension validation + mismatch rejection, empty-input short-circuit, factory de
 
 ---
 
+## Auth layout consistency (login / sign up)
+
+**Problem:** `login.html` carried the full two-column layout (dark promotional panel + form) but
+`signup.html` had only the wide `.auth-main` column. Because `.auth` is a 2-column grid, the lone
+form landed in the narrow **first** column (5fr ≈ 42%) and the remaining 58% was empty — exactly the
+lopsided page that was reported.
+
+**Fix — one shared layout, no duplicated markup:**
+
+- `frontend/js/shell.js` — the bare shell now renders the promotional panel itself (`AUTH_ASIDE`
+  copy per page + one shared `AUTH_POINTS`, via `authAsideHtml(page)`) and injects it as the first
+  child of `.auth` on auth pages. Auth pages no longer receive the marketing footer, so
+  `header + panel + form` fill the viewport exactly (the landing page keeps its footer).
+- `frontend/login.html`, `frontend/signup.html` — the hand-written `<aside>` was deleted; both pages
+  are now only `.auth > .auth-main > .auth-card` (page-specific form content). The shared header
+  (logo, "StudyMate AI", "Adaptive learning" and the cross-linked CTA) already came from `shell.js`.
+- `frontend/css/pages.css` — column split stays 5fr / 7fr (~42% / 58%); card `max-width` 440 → **470px**;
+  added a `.auth > .auth-main:only-child { grid-column: 1 / -1 }` guard; tablet (≤1023px) now keeps
+  **both** columns with reduced padding (the panel previously vanished at 1024px); mobile (≤767px)
+  stacks to one column and hides the panel; the aside-foot icon is sized; `min-height` accounts for
+  the header's 1px bottom border so there is no stray 1px scrollbar.
+
+**Checks (all green):**
+
+- `node --check` on all 21 frontend JS files.
+- Headless render harness + jsdom integration (48 assertions): both pages mount the same
+  `.bare-header`, one `.auth-aside` in the same position with the same three features, the same card
+  styling and correct CTA cross-links; both empty-submit validation toasts still fire.
+- Real Chrome (Puppeteer) layout test at 1440 / 1280 / 900 / 768 / 375px: no horizontal overflow
+  anywhere, panel = 41.7% on desktop/tablet and hidden at ≤767px, card = 470px on desktop, no
+  vertical scroll, and both pages are geometrically identical at every viewport.
+
+---
+
 ## How to resume
 
 ```powershell

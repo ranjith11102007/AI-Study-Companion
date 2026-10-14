@@ -9,6 +9,8 @@
 <body data-shell="bare" data-page="signup">
 
   <main class="auth">
+    <!-- The shared promotional panel is rendered by js/shell.js for every
+         auth page, so login and sign up stay pixel-identical. -->
     <div class="auth-main">
       <div class="auth-card">
         <span class="t-eyebrow">Get started</span>
@@ -20,21 +22,21 @@
             <label class="field-label" for="signup-name">Full Name <span class="req">*</span></label>
             <div class="input-group">
               <span class="input-icon" data-icon="user"></span>
-              <input class="input" type="text" id="signup-name" name="name" placeholder="John Doe" required />
+              <input class="input" type="text" id="signup-name" name="name" placeholder="John Doe" autocomplete="name" required />
             </div>
           </div>
           <div class="field">
             <label class="field-label" for="signup-email">Email <span class="req">*</span></label>
             <div class="input-group">
               <span class="input-icon" data-icon="user"></span>
-              <input class="input" type="email" id="signup-email" name="email" placeholder="you@example.com" required />
+              <input class="input" type="email" id="signup-email" name="email" placeholder="you@example.com" autocomplete="email" required />
             </div>
           </div>
           <div class="field">
             <label class="field-label" for="signup-password">Password <span class="req">*</span></label>
             <div class="input-group">
               <span class="input-icon" data-icon="lock"></span>
-              <input class="input" type="password" id="signup-password" name="password" placeholder="••••••••" required />
+              <input class="input" type="password" id="signup-password" name="password" placeholder="••••••••" autocomplete="new-password" required />
             </div>
           </div>
 
