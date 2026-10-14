@@ -131,8 +131,14 @@ nothing changes (Ollama stays the default).
 2. **AI key.** Create a free key at Google AI Studio
    (<https://aistudio.google.com/app/apikey>) → this is `OPENAI_API_KEY`.
    (Groq also has a free tier for **chat**, but no embeddings; Gemini covers both.)
-3. **Put the repo on GitHub** (this folder is not a git repo yet — `git init`,
-   commit, push).
+3. **Put the repo on GitHub.** The folder is already a git repo with an initial
+   commit (`.env` is ignored). Create an **empty** repo on GitHub, then:
+
+   ```powershell
+   git remote add origin https://github.com/<you>/<repo>.git
+   git branch -M main
+   git push -u origin main
+   ```
 4. **Deploy on Render.** *New + → Blueprint* → choose the repo. Render reads
    [`render.yaml`](../render.yaml) and builds the [`Dockerfile`](../Dockerfile).
 5. **Set the two secrets** in the Render dashboard when prompted:
