@@ -41,8 +41,35 @@
           </div>
 
           <button class="btn btn-primary btn-lg btn-block" type="submit">Create account</button>
+
+          <a class="btn btn-ghost btn-block" id="google-btn" href="/api/auth/google/start">
+            <span data-icon="compass"></span> Continue with Google
+          </a>
+          <div class="banner banner-plain" id="oauth-note" hidden style="font-size:12px">
+            <span data-icon="info"></span>
+            <div id="oauth-note-text"></div>
+          </div>
         </form>
 
+        <script>
+          (function () {
+            try {
+              fetch("/api/auth/providers").then(function (r) { return r.json(); })
+                .then(function (p) {
+                  if (!p || !p.google_oauth_enabled) {
+                    var btn = document.getElementById("google-btn");
+                    if (btn) btn.hidden = true;
+                    var note = document.getElementById("oauth-note");
+                    var nt = document.getElementById("oauth-note-text");
+                    if (note && nt) {
+                      nt.textContent = "Google sign-in is not configured on this server.";
+                      note.hidden = false;
+                    }
+                  }
+                }).catch(function () {});
+            } catch (e) {}
+          })();
+        </script>
         <p class="auth-alt">
           Already have an account?
           <a href="login.html">Sign in</a>
