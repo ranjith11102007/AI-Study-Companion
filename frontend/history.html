@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study History · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="history">
+
+  <main id="page-content">
+    <div class="page-head">
+      <div>
+        <h1>Study history</h1>
+        <p class="sub">Every study action, drawn from your real activity — tutor sessions, quiz attempts,
+          uploads and mastery updates. Nothing here is fabricated.</p>
+      </div>
+      <div class="page-actions">
+        <label class="stack stack-xs" style="gap:4px">
+          <span class="t-eyebrow">Filter</span>
+          <select class="select" id="history-kind" aria-label="Kind">
+            <option value="">All activity</option>
+            <option value="tutor">Tutor sessions</option>
+            <option value="assessment">Quiz attempts</option>
+            <option value="upload">Uploads</option>
+            <option value="mastery">Mastery</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div class="stack stack-lg">
+      <div class="banner banner-info" id="history-summary" hidden>
+        <span data-icon="info"></span>
+        <div id="history-summary-text"></div>
+      </div>
+
+      <div class="card card-flush">
+        <div class="card-head">
+          <h3>Activity feed</h3>
+          <span class="t-sm muted" id="history-count">0 events</span>
+        </div>
+        <div class="list" id="history-list">
+          <div class="state tinted">
+            <span class="state-icon"><span data-icon="history"></span></span>
+            <span class="state-title">Loading your history…</span>
+            <span class="state-text">Gathering real activity from your account.</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <button class="btn btn-quiet btn-sm" id="history-prev" type="button"><span data-icon="chevronLeft"></span> Newer</button>
+            <span class="t-sm muted" id="history-page">—</span>
+            <button class="btn btn-quiet btn-sm" id="history-next" type="button">Older <span data-icon="chevronRight"></span></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="state tinted" id="history-empty" hidden>
+        <span class="state-icon"><span data-icon="inbox"></span></span>
+        <span class="state-title">No activity yet</span>
+        <span class="state-text">Ask a tutor question, take a quiz, or upload a material and your history appears here.</span>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/history.js"></script>
+</body>
+</html>

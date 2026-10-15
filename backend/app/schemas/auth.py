@@ -17,3 +17,22 @@ class Token(BaseModel):
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+
+# --- Phase 10: verification, reset, OAuth ---------------------------------
+
+class EmailVerifyConfirmRequest(BaseModel):
+    token: str
+
+class PasswordResetRequest(BaseModel):
+    email: str
+
+class PasswordResetConfirmRequest(BaseModel):
+    token: str
+    new_password: str
+
+class ProviderStatusResponse(BaseModel):
+    email_enabled: bool
+    google_oauth_enabled: bool
+    smtp_from: str | None = None
+    redirect_uri: str | None = None

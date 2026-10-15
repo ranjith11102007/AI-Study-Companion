@@ -1,6 +1,8 @@
 """SQLAlchemy ORM models (users, courses, sources, chunks, mastery, assessments)."""
 
 from app.models.assessment import Assessment, Attempt, Question, Response
+from app.models.assignment import Assignment
+from app.models.auth_security import EmailVerificationToken, OAuthIdentity, PasswordResetToken
 from app.models.content_embedding import ContentEmbedding
 from app.models.content_unit import ContentUnit
 from app.models.conversation import Conversation, Message
@@ -12,15 +14,19 @@ from app.models.user import User
 
 __all__ = [
     "Assessment",
+    "Assignment",
     "Attempt",
     "ContentEmbedding",
     "ContentUnit",
     "ContentUnitTopic",
     "Conversation",
     "Course",
+    "EmailVerificationToken",
     "EvaluationRun",
     "LearningMaterial",
     "Message",
+    "OAuthIdentity",
+    "PasswordResetToken",
     "Question",
     "Recommendation",
     "Response",

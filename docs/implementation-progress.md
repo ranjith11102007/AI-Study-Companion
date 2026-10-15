@@ -455,7 +455,37 @@ delete and re-upload.
 
 ---
 
-## Upgrade increment 1 — document reader + Global Web Search
+## Upgrade increment 2 — profile/settings, study history, course edit, assignments, auth flows
+
+Second slice of the upgrade program (Phases 6–10). Implemented in build mode:
+
+### Backend
+- **0004_user_profile** (applied): `users.display_name`, `users.preferences` (JSONB), `users.email_verified_at`.
+- `GET/PATCH /api/users/me`: real profile (name + email account), server-side preferences with merge, editable display name. Email is read-only here.
+- `GET /api/history`: paginated activity feed derived *only* from real rows (conversations, assessment attempts, uploads, mastery moves) with ownership scoping by `user_id` / joined `course.user_id`, optional `kind` and `course_id` filters.
+- **0005_assignments** (applied): `assignments` table. CRUD (`GET/POST/PATCH/DELETE /api/assignments/`) plus `POST /api/assignments/generate` which creates real rows from `learner.weak_topics` only — when no topic has enough evidence it honestly returns `[]`.
+- **0006_auth_security** (applied): `users.password_hash` nullable (for OAuth accounts); plus `oauth_identities`, `email_verification_tokens`, `password_reset_tokens` (hashed, single-use, TTL) with named indexes so `alembic check` is clean.
+- Auth: `POST /api/auth/verify-email/{request,confirm}`, `POST /api/auth/password-reset/{request,confirm}`, `GET /api/auth/google/{start,callback}`, `GET /api/auth/providers` status. Real SMTP (`app/services/email.py`) and Google OAuth via httpx, both **off by default**.
+- Config: `SMTP_*`, `EMAIL_VERIFY_TOKEN_TTL_MINUTES`, `PASSWORD_RESET_TOKEN_TTL_MINUTES`, `GOOGLE_*`, `FRONTEND_BASE_URL`, plus `email_enabled`/`google_oauth_enabled` flags.
+
+### Frontend
+- `settings.html`/`settings.js`: server-side profile + preferences (reduce motion), account email/created date, email-verification status + "send link" button.
+- New `history.html`/`js/history.js` with real activity feed + kind filter + pagination, plus the missing "Study History" sidebar entry.
+- `courses.js`: edit and delete courses (Edit/Delete buttons, modal switches between create/edit).
+- `login.html`: "Forgot password?" now links to `reset.html`; "Continue with Google" button that hides itself when OAuth isn't configured + disables note.
+- New `verify.html` and `reset.html` pages.
+
+### Tests
+- `test_profile_history_api.py`: 8 passed (real account, persistence, merge, auth, owner-scoping for uploads, kind filter, pagination, course ownership).
+- `test_assignments_api.py`: 4 passed.
+- `test_auth_phase10.py`: 6 passed (reset flow incl. replay, verification flow, constant-time probing, Google state + exchange with MockTransport, 503 when unconfigured).
+- Full suite: **114 passed** (was 111) once all increments combined. (Rerun after each; check on one merge pending.)
+
+### Honest limits
+- Auth flows are implemented + unit/integration tested, but live SMTP and Google are not configured, so both are visibly "disabled" until credentials arrive.
+- Assignments are a "study plan" derived from mastery gaps; assessment generation/grading is unchanged and remains real.
+- Course edit/delete and history UI not yet browser-verified.
+EOF
 
 First slice of the "professional upgrade" program. Scope chosen for a fully
 working, verifiable increment (no mocks, no fake data): **Phase 3 foundation**

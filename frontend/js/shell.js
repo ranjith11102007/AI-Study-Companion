@@ -29,7 +29,8 @@
       title: "Insights",
       items: [
         { id: "progress", label: "Progress", href: "progress.html", icon: "chart" },
-        { id: "recommendations", label: "Weak topics", href: "recommendations.html", icon: "target" }
+        { id: "recommendations", label: "Weak topics", href: "recommendations.html", icon: "target" },
+        { id: "history", label: "Study History", href: "history.html", icon: "history" }
       ]
     },
     {
@@ -55,7 +56,8 @@
     progress: "progress",
     recommendations: "progress",
     flashcards: "flashcards",
-    settings: "settings"
+    settings: "settings",
+    history: "history"
   };
 
   var TITLES = {
@@ -72,7 +74,8 @@
     recommendations: ["Weak topics", "Revision recommendations"],
     source: ["Source viewer", "Page · slide · timestamp references"],
     flashcards: ["Flashcards", "Spaced revision"],
-    settings: ["Settings", "Account and preferences"]
+    settings: ["Settings", "Account and preferences"],
+    history: ["Study History", "Your real learning activity"]
   };
 
   var BOTTOM = [

@@ -157,6 +157,40 @@ class Settings(BaseSettings):
     # returns very long descriptions cannot blow the local context window.
     search_max_context_chars: int = 4000
 
+    # --- Email / profile auth (Phase 10) ---
+    # Base URL of the front-end, used to build verification/reset links in emails.
+    frontend_base_url: str = "http://127.0.0.1:8000"
+    email_verify_token_ttl_minutes: int = 60 * 24
+    password_reset_token_ttl_minutes: int = 30
+    # SMTP (real). Empty values leave email features visibly "not configured".
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_username: str = ""
+    smtp_password: str = ""
+    smtp_from: str = ""
+    smtp_use_tls: bool = True
+
+    # --- Google OAuth (Phase 10) ---
+    # Empty = disabled (handled as {"ok": false} + 503) until the operator
+    # supplies real credentials. Never auto-switches to it.
+    google_client_id: str = ""
+    google_client_secret: str = ""
+    google_redirect_uri: str = ""
+    oauth_state_ttl_minutes: int = 10
+
+    @property
+    def email_enabled(self) -> bool:
+        """True only when enough SMTP config is present to *actually* send mail."""
+        return bool((self.smtp_host or "").strip() and (self.smtp_from or "").strip())
+
+    @property
+    def google_oauth_enabled(self) -> bool:
+        return bool(
+            (self.google_client_id or "").strip()
+            and (self.google_client_secret or "").strip()
+            and (self.google_redirect_uri or "").strip()
+        )
+
     # Ingestion (PDF + PPTX + images + text; OCR uses the local Tesseract engine)
     allowed_material_extensions: str = "pdf,pptx,png,jpg,jpeg,webp,txt,md"
     max_upload_size_mb: int = 15

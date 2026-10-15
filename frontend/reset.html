@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reset password · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="bare" data-page="reset">
+  <main class="auth-main" style="padding:40px;min-height:100vh;display:flex;align-items:center;justify-content:center">
+    <div class="auth-card" style="max-width:460px">
+      <span class="t-eyebrow">Reset password</span>
+      <h1 class="mt-sm" id="title">Password reset</h1>
+
+      <!-- Step 1: request a link -->
+      <section id="request-step">
+        <p class="auth-sub">Enter the email on the account and a reset link will be sent if the account exists.</p>
+        <form id="request-form" class="stack" novalidate>
+          <div class="field">
+            <label class="field-label" for="reset-email">Email <span class="req">*</span></label>
+            <div class="input-group">
+              <span class="input-icon" data-icon="user"></span>
+              <input class="input" type="email" id="reset-email" autocomplete="email" required />
+            </div>
+          </div>
+          <button class="btn btn-primary btn-lg btn-block" type="submit">Send reset link</button>
+        </form>
+        <p class="t-sm muted mt-sm" id="request-result" hidden></p>
+      </section>
+
+      <!-- Step 2: use the link -->
+      <section id="confirm-step" hidden>
+        <p class="auth-sub">Choose a new password for your account.</p>
+        <form id="confirm-form" class="stack" novalidate>
+          <div class="field">
+            <label class="field-label" for="reset-new">New password <span class="req">*</span></label>
+            <div class="input-group">
+              <span class="input-icon" data-icon="lock"></span>
+              <input class="input" type="password" id="reset-new" autocomplete="new-password" required minlength="6" />
+            </div>
+          </div>
+          <button class="btn btn-primary btn-lg btn-block" type="submit">Reset password</button>
+        </form>
+        <p class="t-sm muted mt-sm" id="confirm-result" hidden></p>
+      </section>
+
+      <div class="row row-between mt-md">
+        <a class="btn btn-ghost btn-sm" href="login.html">Sign in</a>
+        <a class="btn btn-quiet btn-sm" href="signup.html">Create account</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (function () {
+      var token = new URLSearchParams(window.location.search).get("token");
+      var requestStep = document.getElementById("request-step");
+      var confirmStep = document.getElementById("confirm-step");
+      if (token) {
+        requestStep.hidden = true;
+        confirmStep.hidden = false;
+      }
+
+      document.getElementById("request-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var email = document.getElementById("reset-email").value.trim();
+        var res = await fetch("/api/auth/password-reset/request", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: email })
+        });
+        var data = await res.json().catch(function () { return {}; });
+        var out = document.getElementById("request-result");
+        out.hidden = false;
+        out.textContent = (data && data.message) || "Check your email — if an account exists, a link was sent.";
+      });
+
+      document.getElementById("confirm-form").addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var pw = document.getElementById("reset-new").value;
+        var res = await fetch("/api/auth/password-reset/confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: token, new_password: pw })
+        });
+        var data = await res.json().catch(function () { return {}; });
+        var out = document.getElementById("confirm-result");
+        out.hidden = false;
+        if (res.ok) {
+          out.textContent = "Password updated. You can sign in now.";
+          document.getElementById("confirm-form").hidden = true;
+        } else {
+          out.textContent = (data && data.detail) || "This reset link is invalid or has expired.";
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -93,12 +93,12 @@ async function fetchHealth() {
 /* -------------------------------------------------------------------------- */
 /* Auth                                                                       */
 /* -------------------------------------------------------------------------- */
-async function signup(data) {
-  return fetchJson("/api/auth/signup", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data)
-  });
+function verifyEmailRequest() {
+  return fetchJson("/api/auth/verify-email/request", { method: "POST" });
+}
+
+async function getAuthProviders() {
+  return fetchJson("/api/auth/providers");
 }
 
 async function signin(data) {
@@ -235,6 +235,32 @@ async function searchWeb(payload) {
 
 async function searchStatus() {
   return fetchJson("/api/search/status");
+}
+
+/* -------------------------------------------------------------------------- */
+/* Profile + study history                                                    */
+/* -------------------------------------------------------------------------- */
+async function getProfile() {
+  return fetchJson("/api/users/me");
+}
+
+async function updateProfile(data) {
+  return fetchJson("/api/users/me", {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+}
+
+async function getHistory(params) {
+  const opts = params || {};
+  const query = [];
+  Object.keys(opts).forEach(function (key) {
+    const value = opts[key];
+    if (value === undefined || value === null || value === "") return;
+    query.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
+  });
+  return fetchJson("/api/history" + (query.length ? "?" + query.join("&") : ""));
 }
 
 /* -------------------------------------------------------------------------- */
@@ -538,6 +564,11 @@ window.StudyAPI = {
   fetchMaterialFile: fetchMaterialFile,
   searchWeb: searchWeb,
   searchStatus: searchStatus,
+  getProfile: getProfile,
+  updateProfile: updateProfile,
+  getHistory: getHistory,
+  verifyEmailRequest: verifyEmailRequest,
+  getAuthProviders: getAuthProviders,
   askTutor: askTutor,
   streamTutor: streamTutor,
   listConversations: listConversations,

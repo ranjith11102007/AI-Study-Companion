@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify email · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="bare" data-page="verify">
+  <main class="auth-main" style="padding:40px;min-height:100vh;display:flex;align-items:center;justify-content:center">
+    <div class="auth-card" style="max-width:460px">
+      <span class="t-eyebrow">Email verification</span>
+      <h1 class="mt-sm">Verification</h1>
+      <p class="auth-sub" id="status">Verifying your address…</p>
+      <div class="row row-between mt-md">
+        <a class="btn btn-ghost btn-sm" href="login.html">Sign in</a>
+        <a class="btn btn-quiet btn-sm" href="settings.html">Settings</a>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    (async function () {
+      var statusEl = document.getElementById("status");
+      var token = new URLSearchParams(window.location.search).get("token");
+      if (!token) {
+        statusEl.textContent = "This verification link is missing its token.";
+        return;
+      }
+      try {
+        var response = await fetch("/api/auth/verify-email/confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: token })
+        });
+        var data = await response.json().catch(function () { return {}; });
+        if (response.ok) {
+          statusEl.textContent = "Your email is verified: " + (data.email || "");
+        } else {
+          statusEl.textContent = (data && data.detail) || "This verification link is invalid or has expired.";
+        }
+      } catch (e) {
+        statusEl.textContent = "Could not reach the backend. Make sure it is running.";
+      }
+    })();
+  </script>
+</body>
+</html>

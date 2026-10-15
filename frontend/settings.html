@@ -25,15 +25,29 @@
             <span class="avatar" style="width:52px;height:52px;font-size:18px">S</span>
             <div class="stack" style="gap:0">
               <strong id="profile-label">Local learner</strong>
-              <span class="t-sm muted">Profile details are stored in this browser.</span>
+              <span class="t-sm muted">Your account on the backend.</span>
             </div>
           </div>
           <div class="field">
             <label class="field-label" for="display-name">Display name</label>
             <input class="input" id="display-name" type="text" placeholder="e.g. Sam"
                    autocomplete="nickname" />
-            <span class="field-help">Saved in this browser only (localStorage).</span>
+            <span class="field-help">Stored on your account so it follows you across devices.</span>
           </div>
+
+          <div class="stack stack-xs">
+            <span class="t-eyebrow">Account</span>
+            <span class="t-sm" id="account-email">—</span>
+            <span class="t-sm muted" id="account-created">—</span>
+          </div>
+
+          <div class="row row-between row-wrap" id="verify-row" hidden>
+            <span class="t-sm">Email verification required.</span>
+            <button class="btn btn-ghost btn-sm" id="verify-request-btn" type="button">
+              <span data-icon="send"></span> Send verification link
+            </button>
+          </div>
+          <p class="t-sm muted" id="verify-status" hidden></p>
         </div>
       </div>
 
@@ -69,7 +83,7 @@
             </label>
           </div>
           <p class="t-sm muted mt-md">
-            Preferences are stored in this browser.
+            Reduce Motion is saved to your account; the others stay in this browser.
           </p>
           <button class="btn btn-ghost btn-sm mt-sm" id="reset-prefs">
             <span data-icon="rotate"></span> Clear local preferences

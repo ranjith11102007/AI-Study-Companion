@@ -43,10 +43,18 @@
               <input type="checkbox" checked data-todo="Session persistence across visits is coming soon." />
               <span>Remember me</span>
             </label>
-            <a href="#" data-todo="Password reset is coming soon.">Forgot password?</a>
+            <a href="reset.html">Forgot password?</a>
           </div>
 
           <button class="btn btn-primary btn-lg btn-block" type="submit">Sign in</button>
+
+          <a class="btn btn-ghost btn-block" id="google-btn" href="/api/auth/google/start">
+            <span data-icon="compass"></span> Continue with Google
+          </a>
+          <div class="banner banner-plain" id="oauth-note" hidden style="font-size:12px">
+            <span data-icon="info"></span>
+            <div id="oauth-note-text"></div>
+          </div>
 
           <div class="banner banner-plain" style="font-size:12px">
             <span data-icon="info"></span>
@@ -54,6 +62,42 @@
               backend and a session token is issued for this visit.</div>
           </div>
         </form>
+
+        <script>
+          (function () {
+            try {
+              fetch("/api/auth/providers").then(function (r) { return r.json(); })
+                .then(function (p) {
+                  if (!p || !p.google_oauth_enabled) {
+                    var btn = document.getElementById("google-btn");
+                    if (btn) btn.hidden = true;
+                    var note = document.getElementById("oauth-note");
+                    var nt = document.getElementById("oauth-note-text");
+                    if (note && nt) {
+                      nt.textContent = "Google sign-in is not configured on this server " +
+                        "(set GOOGLE_CLIENT_ID/SECRET + redirect URI).";
+                      note.hidden = false;
+                    }
+                  }
+                }).catch(function () {});
+            } catch (e) {}
+            try {
+              var params = new URLSearchParams(window.location.search);
+              var token = params.get("token");
+              if (token) {
+                sessionStorage.setItem("studymate:token", token);
+                params.delete("token");
+                params.delete("token_type");
+                var qs = params.toString();
+                window.location.replace(window.location.pathname + (qs ? "?" + qs : "") || "dashboard.html");
+              }
+              if (params.get("error")) {
+                globalThis.StudyUI && globalThis.StudyUI.toast &&
+                  globalThis.StudyUI.toast("Google sign-in failed: " + params.get("error"), "danger");
+              }
+            } catch (e) {}
+          })();
+        </script>
 
         <p class="auth-alt">
           No account yet?
