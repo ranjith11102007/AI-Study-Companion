@@ -204,6 +204,64 @@ button, input, select, textarea {
   gap: var(--gutter);
   align-items: start;
 }
+
+/* Split-screen study workspace: document | tutor | rail */
+.workspace-doc {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 5fr) minmax(220px, 2.5fr);
+  gap: var(--gutter);
+  align-items: start;
+}
+.doc-viewer {
+  position: relative;
+  height: 620px;
+  overflow: auto;
+  background: var(--subpanel);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--space-sm);
+}
+.doc-viewer canvas {
+  display: block;
+  max-width: none;
+  background: var(--white);
+  box-shadow: var(--shadow-card);
+  border-radius: 2px;
+}
+.doc-text {
+  margin: 0;
+  width: 100%;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--ink-soft);
+}
+.doc-image { max-width: 100%; height: auto; border-radius: var(--r-sm); }
+.doc-state {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 6px;
+  padding: var(--space-lg);
+}
+#doc-error { margin-top: 0; }
+
+@media (max-width: 1300px) {
+  .workspace-doc { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .workspace-doc > .doc-rail { grid-column: 1 / -1; }
+}
+@media (max-width: 900px) {
+  .workspace-doc { grid-template-columns: minmax(0, 1fr); }
+  .workspace-doc > .doc-rail { grid-column: auto; }
+  .doc-viewer { height: 460px; }
+}
 .workspace-rail {
   display: grid;
   grid-template-columns: minmax(220px, 3fr) minmax(0, 9fr);

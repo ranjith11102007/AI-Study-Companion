@@ -144,6 +144,19 @@ class Settings(BaseSettings):
     # Provider health probes
     provider_health_timeout_seconds: float = 5.0
 
+    # Optional global web search (Mode C). Disabled unless an operator opts in
+    # by setting SEARCH_PROVIDER and the matching API key. Core tutoring,
+    # summaries and assessments never depend on this — a local-first install
+    # simply leaves it empty and the feature reports "not configured".
+    # "brave" = Brave Search API (documented free tier, one key).
+    search_provider: str = ""
+    brave_search_api_key: str = ""
+    search_max_results: int = 5
+    search_timeout_seconds: float = 10.0
+    # Hard cap on snippet text handed to the local model, so a provider that
+    # returns very long descriptions cannot blow the local context window.
+    search_max_context_chars: int = 4000
+
     # Ingestion (PDF + PPTX + images + text; OCR uses the local Tesseract engine)
     allowed_material_extensions: str = "pdf,pptx,png,jpg,jpeg,webp,txt,md"
     max_upload_size_mb: int = 15
@@ -197,6 +210,14 @@ class Settings(BaseSettings):
     @property
     def is_insecure_secret(self) -> bool:
         return self.secret_key == DEFAULT_SECRET
+
+    @property
+    def web_search_enabled(self) -> bool:
+        """True only when a provider *and* its key are configured."""
+        provider = (self.search_provider or "").strip().lower()
+        if provider == "brave":
+            return bool((self.brave_search_api_key or "").strip())
+        return False
 
 
 @lru_cache

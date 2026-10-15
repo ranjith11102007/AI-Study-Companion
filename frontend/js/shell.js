@@ -20,6 +20,7 @@
       title: "Learn",
       items: [
         { id: "tutor", label: "AI Tutor", href: "tutor.html", icon: "chat" },
+        { id: "globalsearch", label: "Global Search", href: "global-search.html", icon: "compass" },
         { id: "assessment", label: "Assessments", href: "assessment.html", icon: "quiz" },
         { id: "flashcards", label: "Flashcards", href: "flashcards.html", icon: "layers", badge: "Soon" }
       ]
@@ -47,6 +48,7 @@
     upload: "courses",
     source: "courses",
     tutor: "tutor",
+    globalsearch: "globalsearch",
     assessment: "assessment",
     quiz: "assessment",
     results: "assessment",
@@ -62,6 +64,7 @@
     course: ["Course overview", "Structure and readiness"],
     upload: ["Upload materials", "PDF · PPT/PPTX · video · images"],
     tutor: ["AI tutor", "Source-grounded answers with citations"],
+    globalsearch: ["Global search", "Cited answers from the open web (optional)"],
     assessment: ["Assessments", "Configure an adaptive quiz"],
     quiz: ["Quiz", "Answer session"],
     results: ["Results", "Score breakdown and review"],

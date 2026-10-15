@@ -199,6 +199,44 @@ async function reprocessMaterial(materialId) {
   });
 }
 
+/**
+ * Fetch a material's original file as a Response, carrying the bearer token.
+ * Used by the document viewer (an <a href> cannot send an Authorization
+ * header, so the viewer fetches the bytes and renders them locally).
+ */
+async function fetchMaterialFile(materialId) {
+  const token = sessionStorage.getItem("studymate:token");
+  const response = await fetch(
+    `${resolveApiBase()}/api/materials/${encodeURIComponent(materialId)}/file`,
+    { headers: token ? { Authorization: `Bearer ${token}` } : {}, cache: "no-store" }
+  );
+  if (!response.ok) {
+    const err = new Error(
+      response.status === 404
+        ? "That file is no longer available on the server."
+        : "Could not load the document (" + response.status + ")."
+    );
+    err.status = response.status;
+    throw err;
+  }
+  return response;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Global web search (Mode C, optional)                                       */
+/* -------------------------------------------------------------------------- */
+async function searchWeb(payload) {
+  return fetchJson("/api/search/web", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+}
+
+async function searchStatus() {
+  return fetchJson("/api/search/status");
+}
+
 /* -------------------------------------------------------------------------- */
 /* Tutor                                                                      */
 /* -------------------------------------------------------------------------- */
@@ -497,6 +535,9 @@ window.StudyAPI = {
   getMaterial: getMaterial,
   deleteMaterial: deleteMaterial,
   reprocessMaterial: reprocessMaterial,
+  fetchMaterialFile: fetchMaterialFile,
+  searchWeb: searchWeb,
+  searchStatus: searchStatus,
   askTutor: askTutor,
   streamTutor: streamTutor,
   listConversations: listConversations,

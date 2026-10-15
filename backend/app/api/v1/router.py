@@ -9,6 +9,7 @@ from app.api.v1.endpoints import (
     health,
     learner,
     materials,
+    search,
     topics,
     tutor,
 )
@@ -19,6 +20,7 @@ api_router.include_router(evaluation.router, tags=["providers", "evaluation"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(courses.router, prefix="/courses", tags=["courses"])
 api_router.include_router(materials.router, tags=["materials"])
+api_router.include_router(search.router, tags=["search"])
 api_router.include_router(tutor.router, tags=["tutor"])
 api_router.include_router(citations.router, tags=["citations"])
 api_router.include_router(assessments.router, tags=["assessments"])

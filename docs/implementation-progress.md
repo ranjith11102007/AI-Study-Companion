@@ -4,11 +4,12 @@ This document records the repository audit, the phased implementation plan and t
 state of the upgrade work. It is the resumption point for the next session: read this first,
 then re-run the test suite before continuing.
 
-Last updated: **all phases complete**, and a follow-up PDF-ingestion bug is fixed:
-embedding requests are now batched and retried, with per-stage diagnostics (see
-"PDF ingestion: batching + per-stage diagnostics"). The full suite is **94 passed**
-(up from 78) apart from transient remote-DB network drops (retried automatically —
-see docs/testing.md).
+Last updated: **all phases complete**, plus a follow-up PDF-ingestion fix (batched
+embeddings + per-stage diagnostics), plus **upgrade increment 1**: an authenticated
+material-file endpoint, a split-screen PDF.js document reader, and an optional
+**Global Web Search** (Brave) mode. See "Upgrade increment 1" below. Full suite is
+**94 passed** (up from 78) apart from transient remote-DB network drops (retried
+automatically — see docs/testing.md); the increment-1 test file adds 17 more.
 
 ---
 
@@ -451,6 +452,105 @@ real shared Supabase/pgvector DB, the real `COA UNIT 3.pdf` and the real Gemini
 scored chunks (0.766, 0.741 — pipelining / ID / IF stages). Throwaway rows were
 then removed; the original failed rows 137/138 were left untouched for the user to
 delete and re-upload.
+
+---
+
+## Upgrade increment 1 — document reader + Global Web Search
+
+First slice of the "professional upgrade" program. Scope chosen for a fully
+working, verifiable increment (no mocks, no fake data): **Phase 3 foundation**
+(authenticated document serving + split-screen reader with citation→page) and
+**Phase 4** (optional global web search behind a provider interface).
+
+### Backend
+
+- **`GET /api/materials/{id}/file`** (`app/api/v1/endpoints/materials.py`) — streams
+  the stored original to its **owner only** (ownership via
+  `material_service.get_material`, which returns 404 for anyone else, so existence
+  is never leaked). Served inline with a per-extension media type; the on-disk path
+  is never disclosed. This is the endpoint the reader needs — previously uploaded
+  files were not served at all.
+- **Global web search** (`app/search/`, `app/services/websearch.py`,
+  `app/api/v1/endpoints/search.py`, `app/schemas/websearch.py`):
+  - `SearchProvider` ABC + `WebResult` (`app/search/base.py`). Each result records
+    `source="search_result"` (provider snippet) vs `source="page"` (text fetched
+    from the page) so callers cannot imply a page was read when it wasn't.
+  - `BraveSearchProvider` (`app/search/brave.py`) — `GET
+    https://api.search.brave.com/res/v1/web/search` with `X-Subscription-Token`;
+    a pure `parse_brave_response()` is unit-tested, and `transport=` is injectable.
+  - `app/services/websearch.py` — de-dupes/ranks results, builds a fenced
+    (untrusted) snippet context and answers with the **local** chat model. Honest
+    states: `grounded`, `insufficient`, `unavailable` (model down → results are
+    still returned, no answer invented). Provider failure → `502`.
+  - `POST /api/search/web` (auth + rate-limited) and `GET /api/search/status`.
+  - **Disabled by default**: `SEARCH_PROVIDER` empty ⇒ `get_search_provider()`
+    returns `None` and the endpoint answers `503` with setup instructions.
+- **Config** (`app/core/config.py`): `SEARCH_PROVIDER`, `BRAVE_SEARCH_API_KEY`,
+  `SEARCH_MAX_RESULTS`, `SEARCH_TIMEOUT_SECONDS`, `SEARCH_MAX_CONTEXT_CHARS`, plus
+  `web_search_enabled`. **No migration** was needed (no new tables in this
+  increment). `app/main.py` registers `.mjs` → `text/javascript` so the browser
+  accepts the vendored PDF.js module.
+
+### Frontend
+
+- **PDF.js vendored locally** (`frontend/vendor/pdfjs/pdf.min.mjs` +
+  `pdf.worker.min.mjs`, pdfjs-dist 4.10.38) — no CDN, works offline.
+- **Split-screen reader** (`frontend/js/doc-viewer.mjs`, `frontend/tutor.html`):
+  document | tutor | rail grid, PDF page navigation, jump-to-page, zoom, and
+  page-fit. The file is fetched with the bearer token
+  (`StudyAPI.fetchMaterialFile`) and rendered to canvas, because an `<a href>`
+  cannot send an `Authorization` header. Text and image materials preview too.
+- **Citation → page**: `tutor.js` citation chips carry
+  `data-cite-material`/`data-cite-page`; clicking one opens that document at that
+  page in the panel (falling back to `source.html` if the viewer is unavailable).
+- **Global search page** (`frontend/global-search.html`,
+  `frontend/js/global-search.js`) + a sidebar entry — shows the real title, domain,
+  URL, retrieval time and snippet-vs-page label for each source; a banner explains
+  when the server has no search provider configured.
+
+### Environment
+
+```dotenv
+SEARCH_PROVIDER=            # empty = disabled; "brave" enables Mode C
+BRAVE_SEARCH_API_KEY=       # from https://api-dashboard.search.brave.com (never commit)
+SEARCH_MAX_RESULTS=5
+SEARCH_TIMEOUT_SECONDS=10.0
+SEARCH_MAX_CONTEXT_CHARS=4000
+```
+
+### Tests / checks (actual results)
+
+- `backend/tests/test_websearch.py` — **17 passed** (Brave parsing incl. garbage
+  input, ranking/dedupe, provider key/URL via `httpx.MockTransport`, model-failure
+  honesty, `502`/`422`/`503`, and one owner-scoped `GET /materials/{id}/file` API
+  test + two `/api/search/*` API tests).
+- `pytest tests/test_health.py tests/test_services_unit.py tests/test_ai_providers.py
+  tests/test_websearch.py -q` → **45 passed**.
+- `ruff check app tests` → clean. `node --check` on every changed JS/MJS file → clean.
+
+### Honest limitations (NOT done yet)
+
+- **Full-page fetching is not implemented**: Mode C returns provider **snippets**
+  (labelled `search_result`). Consequently robots.txt/paywall handling is not yet
+  exercised; no page is claimed to have been read.
+- Global search is **disabled until a Brave key is set** — not live-verified here.
+- Reader verified by unit/API tests + static checks; a real-browser pass
+  (Chrome/Edge/Firefox: open tutor → select a PDF → click a citation) is still
+  required and is the next manual step.
+- Not yet built (later increments): cited-text highlighting, resizable panels,
+  document-scoped chat mode, summaries/flashcards, assignments UI, study history,
+  course modal redesign, backend-persisted profile/settings, email verification,
+  password reset, Google OAuth, dashboard/health wiring.
+
+### Browser verification steps
+
+1. Start Ollama and pull the models; run the backend; open `http://127.0.0.1:8000/`.
+2. Sign in, create a course, upload a **PDF**, wait for `ready`.
+3. AI Tutor → the left **Document** panel lists the PDF; navigate pages and zoom.
+4. Ask a question that lands in the document; click a citation chip → the panel
+   jumps to the cited page.
+5. (Optional) set `SEARCH_PROVIDER=brave` + key, restart, open **Global Search**,
+   run a query, and confirm real titles/domains/retrieval times and snippet labels.
 
 ---
 

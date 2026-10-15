@@ -42,7 +42,11 @@
     var loc = App.citationLocation(c);
     var excerpt = c.excerpt ? String(c.excerpt).slice(0, 100) : "";
     return '<a class="citation" href="source.html?unit=' +
-      encodeURIComponent(c.content_unit_id) + '">' +
+      encodeURIComponent(c.content_unit_id) + '"' +
+      ' data-cite-material="' + esc(c.material_id) + '"' +
+      (c.page_number != null ? ' data-cite-page="' + esc(c.page_number) + '"' : "") +
+      ' data-cite-type="' + esc(c.material_type || "") + '"' +
+      ' data-cite-title="' + esc(c.material_title || "Source") + '">' +
       '<span class="cite-icon" data-icon="' + App.materialIcon(c.material_type) + '"></span>' +
       '<span class="cite-main">' +
       '<span class="cite-name">' + esc(c.material_title || "Source") + "</span>" +
@@ -498,6 +502,13 @@
   /* ---------------------------------------------------------------------- */
   /* Init                                                                   */
   /* ---------------------------------------------------------------------- */
+  /* Keep the document panel in sync with the selected course. */
+  function syncViewer() {
+    if (global.StudyDocViewer && global.StudyDocViewer.setCourse) {
+      global.StudyDocViewer.setCourse(App.getCourse());
+    }
+  }
+
   function init() {
     els.select = document.getElementById("course-select");
     els.thread = document.getElementById("chat-thread");
@@ -533,15 +544,43 @@
       });
     }
 
+    // Clicking a citation opens the cited page in the document panel when the
+    // viewer is available; otherwise the link's href (source.html) is used.
+    if (els.thread) {
+      els.thread.addEventListener("click", function (e) {
+        var link = e.target.closest("[data-cite-material]");
+        if (!link) return;
+        var viewer = global.StudyDocViewer;
+        if (!viewer || !viewer.openCitation) return;
+        e.preventDefault();
+        viewer.openCitation({
+          material_id: link.getAttribute("data-cite-material"),
+          page_number: link.getAttribute("data-cite-page")
+            ? Number(link.getAttribute("data-cite-page"))
+            : null,
+          material_type: link.getAttribute("data-cite-type"),
+          material_title: link.getAttribute("data-cite-title")
+        });
+        var panel = document.getElementById("doc-panel");
+        if (panel && panel.scrollIntoView) {
+          panel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        }
+      });
+    }
+
+    global.addEventListener("docviewer:ready", syncViewer);
+
     newChat();
     App.mountCourseSelect(els.select, {
       onChange: function () {
         newChat();
         loadConversations();
+        syncViewer();
       },
       onLoaded: function () {
         newChat();
         loadConversations();
+        syncViewer();
       }
     });
 

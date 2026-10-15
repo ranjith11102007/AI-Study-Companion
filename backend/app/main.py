@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import mimetypes
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -8,6 +9,11 @@ from fastapi.staticfiles import StaticFiles
 from app.api.v1.router import api_router
 from app.core.config import get_settings
 from app.core.logging import get_logger, setup_logging
+
+# Python's mimetypes table does not always know .mjs, and a wrong content type
+# makes the browser refuse the vendored PDF.js ES module. Register it before
+# the static mount so the document viewer loads.
+mimetypes.add_type("text/javascript", ".mjs")
 
 settings = get_settings()
 logger = get_logger(__name__)

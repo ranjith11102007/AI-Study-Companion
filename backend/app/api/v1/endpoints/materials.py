@@ -9,6 +9,7 @@ from fastapi import (
     UploadFile,
     status,
 )
+from fastapi.responses import FileResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import get_current_user
@@ -20,6 +21,19 @@ from app.schemas.material import MaterialResponse
 from app.services import materials as material_service
 
 router = APIRouter()
+
+# Served inline so a browser (or a PDF.js `fetch`) can display the original
+# file. Unknown extensions fall back to a safe binary type.
+_MEDIA_TYPES = {
+    "pdf": "application/pdf",
+    "txt": "text/plain; charset=utf-8",
+    "md": "text/markdown; charset=utf-8",
+    "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "png": "image/png",
+    "jpg": "image/jpeg",
+    "jpeg": "image/jpeg",
+    "webp": "image/webp",
+}
 
 
 async def _serialize(db: AsyncSession, material: LearningMaterial) -> dict:
@@ -88,6 +102,35 @@ async def get_material(
 ):
     material = await material_service.get_material(db, material_id, current_user.id)
     return await _serialize(db, material)
+
+
+@router.get("/materials/{material_id}/file")
+async def get_material_file(
+    material_id: int,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Stream the stored original file to its owner.
+
+    Ownership is enforced by :func:`material_service.get_material` (a 404 for
+    anything the caller does not own, so the endpoint never leaks existence).
+    The on-disk path itself is never disclosed to the client.
+    """
+    material = await material_service.get_material(db, material_id, current_user.id)
+    stored_path = Path(material.file_path)
+    if not stored_path.is_file():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="The stored file is no longer available. Upload it again.",
+        )
+    extension = stored_path.suffix.lstrip(".").lower()
+    media_type = _MEDIA_TYPES.get(extension, "application/octet-stream")
+    return FileResponse(
+        stored_path,
+        media_type=media_type,
+        filename=material.original_filename,
+        content_disposition_type="inline",
+    )
 
 
 @router.post("/materials/{material_id}/reprocess", response_model=MaterialResponse)

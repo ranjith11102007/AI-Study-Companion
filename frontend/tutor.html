@@ -25,7 +25,50 @@
       </div>
     </div>
 
-    <div class="workspace-2">
+    <div class="workspace-doc">
+      <!-- Document viewer -->
+      <div class="card card-flush" id="doc-panel">
+        <div class="card-head">
+          <div class="stack" style="gap:2px">
+            <h3>Document</h3>
+            <span class="t-sm muted" id="doc-sub">Select a material to read it here.</span>
+          </div>
+          <div class="row" style="gap:6px;align-items:center">
+            <button class="btn btn-quiet btn-sm" id="doc-zoom-out" type="button" aria-label="Zoom out">−</button>
+            <span class="t-sm muted" id="doc-zoom-label">100%</span>
+            <button class="btn btn-quiet btn-sm" id="doc-zoom-in" type="button" aria-label="Zoom in">+</button>
+          </div>
+        </div>
+        <div class="card-body stack stack-sm">
+          <div class="row" style="gap:8px">
+            <select class="select" id="doc-material-select" aria-label="Document">
+              <option value="">Select a document…</option>
+            </select>
+          </div>
+
+          <div class="doc-viewer" id="doc-viewer">
+            <div class="doc-state" id="doc-state">
+              <span class="state-icon"><span data-icon="bookOpen"></span></span>
+              <span class="state-title" id="doc-state-title">No document open</span>
+              <span class="state-text" id="doc-state-text">
+                Pick a document above, or click a citation in the tutor to jump straight to its page.
+              </span>
+            </div>
+            <canvas id="doc-canvas" hidden></canvas>
+            <pre class="doc-text" id="doc-text" hidden></pre>
+            <img class="doc-image" id="doc-image" alt="" hidden />
+          </div>
+
+          <div class="banner banner-warn" id="doc-error" hidden></div>
+
+          <div class="row" style="justify-content:space-between;align-items:center">
+            <button class="btn btn-quiet btn-sm" id="doc-prev" type="button"><span data-icon="chevronLeft"></span> Prev</button>
+            <span class="t-sm muted" id="doc-page-label">—</span>
+            <button class="btn btn-quiet btn-sm" id="doc-next" type="button">Next <span data-icon="chevronRight"></span></button>
+          </div>
+        </div>
+      </div>
+
       <!-- Chat -->
       <div class="card card-flush">
         <div class="card-head">
@@ -68,7 +111,7 @@
       </div>
 
       <!-- Rail -->
-      <div class="stack stack-lg">
+      <div class="stack stack-lg doc-rail">
         <div class="card card-flush">
           <div class="card-head">
             <h3>Conversations</h3>
@@ -122,5 +165,6 @@
   <script src="js/health.js"></script>
   <script src="js/shell.js"></script>
   <script src="js/tutor.js"></script>
+  <script type="module" src="js/doc-viewer.mjs"></script>
 </body>
 </html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Global search · StudyMate AI</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body data-shell="app" data-page="globalsearch">
+
+  <main id="page-content">
+    <div class="page-head">
+      <div>
+        <h1>Global search</h1>
+        <p class="sub">Search the open web. Results are cited to their real pages; this mode never mixes
+          external sources into a course answer.</p>
+      </div>
+    </div>
+
+    <div class="stack stack-lg">
+      <div class="card card-flush">
+        <div class="card-body stack stack-md">
+          <div class="banner banner-info" id="search-config" hidden>
+            <span data-icon="info"></span>
+            <div id="search-config-text">Checking whether global search is configured…</div>
+          </div>
+
+          <form class="stack stack-sm" id="search-form">
+            <label class="stack stack-xs" style="gap:4px">
+              <span class="t-eyebrow">Search query</span>
+              <input class="input" type="text" id="search-input" autocomplete="off"
+                     placeholder="e.g. explain the Calvin cycle" aria-label="Search query" />
+            </label>
+            <div class="row" style="justify-content:space-between;align-items:center">
+              <span class="t-sm muted" id="search-hint">Answers are generated locally from retrieved snippets.</span>
+              <button class="btn btn-primary" type="submit" id="search-btn">
+                <span data-icon="search"></span> Search
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="stack stack-lg" id="search-output" hidden>
+        <div class="card card-flush" id="search-answer-card">
+          <div class="card-head">
+            <div class="stack" style="gap:2px">
+              <h3>Answer</h3>
+              <span class="t-sm muted" id="search-answer-sub">Generated locally from the retrieved snippets.</span>
+            </div>
+            <span class="ai-pill idle" id="search-status"><span class="dot6"></span><span data-status-text>Ready</span></span>
+          </div>
+          <div class="card-body stack stack-md">
+            <div id="search-notice" hidden></div>
+            <div class="prose" id="search-answer"></div>
+          </div>
+        </div>
+
+        <div class="card card-flush">
+          <div class="card-head">
+            <h3>Sources</h3>
+            <span class="t-sm muted" id="search-source-count">0 results</span>
+          </div>
+          <div class="list" id="search-results"></div>
+        </div>
+      </div>
+
+      <div class="state tinted" id="search-empty">
+        <span class="state-icon"><span data-icon="compass"></span></span>
+        <span class="state-title">Search the open web</span>
+        <span class="state-text">
+          Enter a question above. Results are shown with their real titles, domains, URLs and
+          retrieval times — snippets are labelled as snippets, never as verified pages.
+        </span>
+      </div>
+    </div>
+  </main>
+
+  <script src="js/icons.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/health.js"></script>
+  <script src="js/shell.js"></script>
+  <script src="js/global-search.js"></script>
+</body>
+</html>
