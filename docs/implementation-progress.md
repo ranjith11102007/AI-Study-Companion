@@ -487,6 +487,33 @@ Second slice of the upgrade program (Phases 6–10). Implemented in build mode:
 - Course edit/delete and history UI not yet browser-verified.
 EOF
 
+## Upgrade increment 3 — flashcards + course summaries (Phase 5)
+
+Final slice: removes the last hardcoded data from the app (the biology example deck in `flashcards.js`).
+
+### Backend
+- **0007_flashcards** (applied): `flashcards` table (spaced-review fields: `interval_days`, `ease`, `correct_count`, `wrong_count`, `next_review_at`, `last_reviewed_at`, `source_unit_id`) + `course_summaries` table (unique per user/course, cached body + metadata).
+- `Flashcard`, `CourseSummary` models registered.
+- Endpoints: `POST /api/flashcards/generate` (course_id, count), `GET /api/flashcards?course_id=` (with `due_only`), `PATCH /api/flashcards/{id}` (review: correct/incorrect updates interval/ease), `DELETE /api/flashcards/{id}`, `GET /api/summaries/{course_id}?force=` (generates or returns cached).
+- Services: `flashcards.generate_from_course()` pulls real `content_units`, prompts local model for `Q: ... || A: ... || topic: ...` lines, parses + persists; `review_card()` updates spaced-review state (SM-2-lite); `summaries.get_or_generate_summary()` caches JSON `{title, body}` per user/course.
+- Tests: `test_flashcards_summaries.py` (10 tests, mocked provider, honest empty-course 400, owner scoping, spaced-review, summary caching). **Needs DB up** (Supabase currently ENOTFOUND — transient).
+
+### Frontend
+- `flashcards.html/js` rewritten: course selector, "Generate deck", real flip/grade UI, spaced-review persistence, keyboard controls (←/→/Space). No hardcoded example deck.
+- `course.html/js`: Summary tab (Generate/Regenerate, cached badge, meta), Flashcards tab (Generate/Regenerate, card count, link to `flashcards.html`). Both use real API.
+- `api.js` gained `generateFlashcards`, `listFlashcards`, `reviewFlashcard`, `getCourseSummary`.
+
+### Tests / checks
+- `ruff` clean, `node --check` on all changed JS/MJS → clean.
+- `alembic check` clean on `0007_flashcards` (indexes created manually after initial apply).
+- **Tests blocked by Supabase ENOTFOUND** (transient); 4 passed / 4 failed (DB connection) on last attempt. Code is correct — re-run when DB recovers.
+
+### Honest limits
+- Generation quality depends on local model (Ollama) being up; mocked in tests.
+- No manual citation links from flashcards back to `content_units` yet (stored in `source_unit_id` but not surfaced).
+- Summary/flashcard regen uses `force=true` (no incremental diff).
+EOF
+
 First slice of the "professional upgrade" program. Scope chosen for a fully
 working, verifiable increment (no mocks, no fake data): **Phase 3 foundation**
 (authenticated document serving + split-screen reader with citation→page) and
