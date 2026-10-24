@@ -449,6 +449,160 @@
           .catch(function (err) { App.handleError(err, "Could not delete the assessment."); });
       });
     }
+
+    /* Summary tab */
+    var genSummaryBtn = document.getElementById("gen-summary-btn");
+    var regenSummaryBtn = document.getElementById("regen-summary-btn");
+    var summaryEmptyBtn = document.getElementById("summary-empty-btn");
+    if (genSummaryBtn || regenSummaryBtn || summaryEmptyBtn) {
+      function loadSummary() {
+        var loading = document.getElementById("summary-loading");
+        var error = document.getElementById("summary-error");
+        var content = document.getElementById("summary-content");
+        var empty = document.getElementById("summary-empty");
+        if (loading) loading.hidden = false;
+        if (error) error.hidden = true;
+        if (content) content.hidden = true;
+        if (empty) empty.hidden = true;
+
+        global.StudyAPI.getCourseSummary(courseId)
+          .then(function (data) {
+            if (loading) loading.hidden = true;
+            if (data && data.body) {
+              if (content) {
+                content.hidden = false;
+                document.getElementById("summary-title").textContent = data.title || "Summary";
+                document.getElementById("summary-body").innerHTML = data.body;
+                var meta = data.cached
+                  ? "Cached · " + esc(data.source_unit_count) + " source units · " + esc(data.model)
+                  : "Generated · " + esc(data.source_unit_count) + " source units · " + esc(data.model);
+                document.getElementById("summary-meta").textContent = meta;
+              }
+              if (regenSummaryBtn) regenSummaryBtn.hidden = false;
+              if (genSummaryBtn) genSummaryBtn.hidden = true;
+              if (summaryEmptyBtn) summaryEmptyBtn.hidden = true;
+            } else {
+              if (empty) empty.hidden = false;
+              if (genSummaryBtn) genSummaryBtn.hidden = false;
+              if (regenSummaryBtn) regenSummaryBtn.hidden = true;
+            }
+          })
+          .catch(function (err) {
+            if (loading) loading.hidden = true;
+            if (error) {
+              error.hidden = false;
+              document.getElementById("summary-error-text").textContent = err && err.message ? err.message : "Could not load summary.";
+            }
+          });
+      }
+
+      function generateSummary(force) {
+        var loading = document.getElementById("summary-loading");
+        var error = document.getElementById("summary-error");
+        if (loading) loading.hidden = false;
+        if (error) error.hidden = true;
+        if (genSummaryBtn) genSummaryBtn.disabled = true;
+        if (regenSummaryBtn) regenSummaryBtn.disabled = true;
+        if (summaryEmptyBtn) summaryEmptyBtn.disabled = true;
+
+        global.StudyAPI.getCourseSummary(courseId, force)
+          .then(function (data) {
+            loadSummary();
+          })
+          .catch(function (err) {
+            if (loading) loading.hidden = true;
+            if (error) {
+              error.hidden = false;
+              document.getElementById("summary-error-text").textContent = err && err.message ? err.message : "Could not generate summary.";
+            }
+            if (genSummaryBtn) genSummaryBtn.disabled = false;
+            if (regenSummaryBtn) regenSummaryBtn.disabled = false;
+            if (summaryEmptyBtn) summaryEmptyBtn.disabled = false;
+          });
+      }
+
+      if (genSummaryBtn) genSummaryBtn.addEventListener("click", function () { generateSummary(false); });
+      if (regenSummaryBtn) regenSummaryBtn.addEventListener("click", function () { generateSummary(true); });
+      if (summaryEmptyBtn) summaryEmptyBtn.addEventListener("click", function () { generateSummary(false); });
+
+      loadSummary();
+    }
+
+    /* Flashcards tab */
+    var genFlashcardsBtn = document.getElementById("gen-flashcards-btn");
+    var regenFlashcardsBtn = document.getElementById("regen-flashcards-btn");
+    var flashcardsEmptyBtn = document.getElementById("flashcards-empty-btn");
+    var openFlashcardsLink = document.getElementById("open-flashcards-link");
+    if (genFlashcardsBtn || regenFlashcardsBtn || flashcardsEmptyBtn) {
+      function loadFlashcardsState() {
+        var loading = document.getElementById("flashcards-loading");
+        var error = document.getElementById("flashcards-error");
+        var content = document.getElementById("flashcards-content");
+        var empty = document.getElementById("flashcards-empty");
+        if (loading) loading.hidden = false;
+        if (error) error.hidden = true;
+        if (content) content.hidden = true;
+        if (empty) empty.hidden = true;
+
+        global.StudyAPI.listFlashcards(courseId)
+          .then(function (cards) {
+            if (loading) loading.hidden = true;
+            if (cards && cards.length) {
+              if (content) {
+                content.hidden = false;
+                document.getElementById("flashcards-count").textContent = cards.length + " card" + (cards.length === 1 ? "" : "s") + " ready";
+                if (openFlashcardsLink) openFlashcardsLink.href = "flashcards.html?course=" + encodeURIComponent(courseId);
+              }
+              if (regenFlashcardsBtn) regenFlashcardsBtn.hidden = false;
+              if (genFlashcardsBtn) genFlashcardsBtn.hidden = true;
+              if (flashcardsEmptyBtn) flashcardsEmptyBtn.hidden = true;
+            } else {
+              if (empty) empty.hidden = false;
+              if (genFlashcardsBtn) genFlashcardsBtn.hidden = false;
+              if (regenFlashcardsBtn) regenFlashcardsBtn.hidden = true;
+            }
+          })
+          .catch(function (err) {
+            if (loading) loading.hidden = true;
+            if (error) {
+              error.hidden = false;
+              document.getElementById("flashcards-error-text").textContent = err && err.message ? err.message : "Could not load flashcards.";
+            }
+          });
+      }
+
+      function generateFlashcards() {
+        var loading = document.getElementById("flashcards-loading");
+        var error = document.getElementById("flashcards-error");
+        if (loading) loading.hidden = false;
+        if (error) error.hidden = true;
+        if (genFlashcardsBtn) genFlashcardsBtn.disabled = true;
+        if (regenFlashcardsBtn) regenFlashcardsBtn.disabled = true;
+        if (flashcardsEmptyBtn) flashcardsEmptyBtn.disabled = true;
+
+        global.StudyAPI.generateFlashcards(courseId)
+          .then(function (cards) {
+            loadFlashcardsState();
+          })
+          .catch(function (err) {
+            if (loading) loading.hidden = true;
+            if (error) {
+              error.hidden = false;
+              document.getElementById("flashcards-error-text").textContent = err && err.message ? err.message : "Could not generate flashcards.";
+            }
+            if (genFlashcardsBtn) genFlashcardsBtn.disabled = false;
+            if (regenFlashcardsBtn) regenFlashcardsBtn.disabled = false;
+            if (flashcardsEmptyBtn) flashcardsEmptyBtn.disabled = false;
+          });
+      }
+
+      if (genFlashcardsBtn) genFlashcardsBtn.addEventListener("click", generateFlashcards);
+      if (regenFlashcardsBtn) regenFlashcardsBtn.addEventListener("click", generateFlashcards);
+      if (flashcardsEmptyBtn) flashcardsEmptyBtn.addEventListener("click", generateFlashcards);
+
+      loadFlashcardsState();
+    }
+
   }
 
   if (document.readyState === "loading") {

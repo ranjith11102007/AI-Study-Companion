@@ -264,6 +264,33 @@ async function getHistory(params) {
 }
 
 /* -------------------------------------------------------------------------- */
+/* Flashcards                                                                 */
+/* -------------------------------------------------------------------------- */
+async function generateFlashcards(courseId) {
+  return fetchJson("/api/flashcards/generate", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ course_id: courseId })
+  });
+}
+
+async function listFlashcards(courseId) {
+  return fetchJson("/api/flashcards?course_id=" + encodeURIComponent(courseId));
+}
+
+async function reviewFlashcard(cardId, correct) {
+  return fetchJson("/api/flashcards/" + encodeURIComponent(cardId), {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ correct: correct })
+  });
+}
+
+async function getCourseSummary(courseId, force) {
+  return fetchJson("/api/summaries/" + encodeURIComponent(courseId) + (force ? "?force=true" : ""));
+}
+
+/* -------------------------------------------------------------------------- */
 /* Tutor                                                                      */
 /* -------------------------------------------------------------------------- */
 async function askTutor(payload) {
@@ -569,6 +596,10 @@ window.StudyAPI = {
   getHistory: getHistory,
   verifyEmailRequest: verifyEmailRequest,
   getAuthProviders: getAuthProviders,
+  generateFlashcards: generateFlashcards,
+  listFlashcards: listFlashcards,
+  reviewFlashcard: reviewFlashcard,
+  getCourseSummary: getCourseSummary,
   askTutor: askTutor,
   streamTutor: streamTutor,
   listConversations: listConversations,

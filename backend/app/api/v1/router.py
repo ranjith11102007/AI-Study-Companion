@@ -4,6 +4,7 @@ from app.api.v1.endpoints import (
     assessments,
     assignments,
     auth,
+    flashcards,
     citations,
     courses,
     evaluation,
@@ -30,5 +31,6 @@ api_router.include_router(tutor.router, tags=["tutor"])
 api_router.include_router(citations.router, tags=["citations"])
 api_router.include_router(assessments.router, tags=["assessments"])
 api_router.include_router(assignments.router, prefix="/assignments", tags=["assignments"])
+api_router.include_router(flashcards.router, tags=["flashcards"])
 api_router.include_router(learner.router, tags=["learner"])
 api_router.include_router(topics.router, tags=["topics"])

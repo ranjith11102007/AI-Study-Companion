@@ -24,6 +24,8 @@
         <a class="btn btn-primary" id="upload-link" href="upload.html"><span data-icon="upload"></span> Upload materials</a>
         <a class="btn btn-ghost" id="assess-link" href="assessment.html"><span data-icon="quiz"></span> Start assessment</a>
         <a class="btn btn-ghost" id="tutor-link" href="tutor.html"><span data-icon="chat"></span> Ask tutor</a>
+        <button class="btn btn-ghost" id="summary-btn"><span data-icon="file"></span> Summary</button>
+        <button class="btn btn-ghost" id="flashcards-btn"><span data-icon="brain"></span> Flashcards</button>
       </div>
     </div>
 
@@ -47,6 +49,8 @@
         <button class="tab" data-tab="materials" role="tab">Materials</button>
         <button class="tab" data-tab="topics" role="tab">Topics</button>
         <button class="tab" data-tab="assessments" role="tab">Assessments</button>
+        <button class="tab" data-tab="summary" role="tab">Summary</button>
+        <button class="tab" data-tab="flashcards" role="tab">Flashcards</button>
       </div>
 
       <!-- Overview -->
@@ -167,6 +171,75 @@
             <span class="state-actions">
               <a class="btn btn-primary btn-sm" id="assessments-empty-btn" href="assessment.html">Start an assessment</a>
             </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Summary -->
+      <section class="tabpanel" data-panel="summary" hidden>
+        <div class="card card-flush">
+          <div class="card-head">
+            <h3>Course summary</h3>
+            <button class="btn btn-primary btn-sm" id="gen-summary-btn"><span data-icon="file"></span> Generate</button>
+            <button class="btn btn-quiet btn-sm" id="regen-summary-btn" hidden><span data-icon="refresh"></span> Regenerate</button>
+          </div>
+          <div class="card-body stack stack-md">
+            <div class="state" id="summary-loading" hidden>
+              <span class="state-icon"><span data-icon="clock"></span></span>
+              <span class="state-title">Generating summary…</span>
+            </div>
+            <div class="state" id="summary-error" hidden>
+              <span class="state-icon amber"><span data-icon="alert"></span></span>
+              <span class="state-title" id="summary-error-title">Failed to generate</span>
+              <span class="state-text" id="summary-error-text"></span>
+            </div>
+            <div id="summary-content" hidden>
+              <h4 id="summary-title"></h4>
+              <div class="prose" id="summary-body"></div>
+              <p class="t-sm muted mt-sm" id="summary-meta"></p>
+            </div>
+            <div class="state" id="summary-empty" hidden>
+              <span class="state-icon slate"><span data-icon="file"></span></span>
+              <span class="state-title">No summary yet</span>
+              <span class="state-text">Generate a summary from your course materials.</span>
+              <span class="state-actions">
+                <button class="btn btn-primary btn-sm" id="summary-empty-btn">Generate</button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Flashcards -->
+      <section class="tabpanel" data-panel="flashcards" hidden>
+        <div class="card card-flush">
+          <div class="card-head">
+            <h3>Flashcards</h3>
+            <button class="btn btn-primary btn-sm" id="gen-flashcards-btn"><span data-icon="brain"></span> Generate deck</button>
+            <button class="btn btn-quiet btn-sm" id="regen-flashcards-btn" hidden><span data-icon="refresh"></span> Regenerate</button>
+          </div>
+          <div class="card-body stack stack-md">
+            <div class="state" id="flashcards-loading" hidden>
+              <span class="state-icon"><span data-icon="clock"></span></span>
+              <span class="state-title">Generating deck…</span>
+            </div>
+            <div class="state" id="flashcards-error" hidden>
+              <span class="state-icon amber"><span data-icon="alert"></span></span>
+              <span class="state-title" id="flashcards-error-title">Failed to generate</span>
+              <span class="state-text" id="flashcards-error-text"></span>
+            </div>
+            <div id="flashcards-content" hidden>
+              <p class="t-sm muted" id="flashcards-count"></p>
+              <a class="btn btn-primary" href="flashcards.html" id="open-flashcards-link">Open in Flashcards page</a>
+            </div>
+            <div class="state" id="flashcards-empty" hidden>
+              <span class="state-icon slate"><span data-icon="brain"></span></span>
+              <span class="state-title">No flashcards yet</span>
+              <span class="state-text">Generate a deck from your course materials.</span>
+              <span class="state-actions">
+                <button class="btn btn-primary btn-sm" id="flashcards-empty-btn">Generate</button>
+              </span>
+            </div>
           </div>
         </div>
       </section>

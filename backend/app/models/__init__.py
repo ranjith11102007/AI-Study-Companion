@@ -7,6 +7,7 @@ from app.models.content_embedding import ContentEmbedding
 from app.models.content_unit import ContentUnit
 from app.models.conversation import Conversation, Message
 from app.models.course import Course
+from app.models.flashcard import CourseSummary, Flashcard
 from app.models.learner import EvaluationRun, Recommendation, TopicMastery
 from app.models.learning_material import LearningMaterial
 from app.models.topic import ContentUnitTopic, Topic
@@ -21,8 +22,10 @@ __all__ = [
     "ContentUnitTopic",
     "Conversation",
     "Course",
+    "CourseSummary",
     "EmailVerificationToken",
     "EvaluationRun",
+    "Flashcard",
     "LearningMaterial",
     "Message",
     "OAuthIdentity",
